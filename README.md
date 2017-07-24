@@ -11,6 +11,6 @@ We have multiple milestones to hit so we can must move fast and effectively.
 https://docs.google.com/document/d/1VB4cwsCERCTwL74aeoBd1UpH9vDLiZTSYb8ocbxusrQ/edit
 
 #### Recommended Articles and Documentation:
-https://medium.com/@adrianli/a-beginner-s-guide-to-draft-js-d1823f58d8cc
+https://medium.com/@adrianli/a-beginner-s-guide-to-draft-js-d1823f58d8cc 
 https://draftjs.org/docs/quickstart-api-basics.html#content
 https://www.draft-js-plugins.com/plugin/alignment
