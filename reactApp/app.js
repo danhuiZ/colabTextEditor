@@ -20,7 +20,6 @@ class Document extends React.Component {
   }
 
   _onBoldClick() {
-    console.log(this);
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
       "BOLD"
