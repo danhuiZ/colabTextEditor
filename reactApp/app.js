@@ -48,15 +48,15 @@ class Document extends React.Component {
 
   _onBulletedClick() {
     this.onChange(RichUtils.toggleBlockType(
-            this.state.editorState,
-            'unordered-list-item'
+      this.state.editorState,
+      'unordered-list-item'
     ));
   }
 
   _onNumberedClick() {
     this.onChange(RichUtils.toggleBlockType(
-            this.state.editorState,
-            'ordered-list-item'
+      this.state.editorState,
+      'ordered-list-item'
     ));
   }
 
@@ -75,6 +75,13 @@ class Document extends React.Component {
 
   render() {
     return (
+       <div>
+        <div id="navigation">
+          <button>Back to Documents Portal</button>
+          <h1>Sample Document</h1>
+          <h4>Document ID: _replace_this_please_ </h4>
+          <button>Save Changes</button>
+        </div>
       <div id="content" >
         <h1>Draft.js Editor</h1>
         <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
