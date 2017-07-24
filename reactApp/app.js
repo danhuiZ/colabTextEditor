@@ -75,6 +75,7 @@ class Document extends React.Component {
 
   render() {
     return (
+    <div>
        <div>
         <div id="navigation">
           <button>Back to Documents Portal</button>
@@ -82,6 +83,7 @@ class Document extends React.Component {
           <h4>Document ID: _replace_this_please_ </h4>
           <button>Save Changes</button>
         </div>
+      </div>
       <div id="content" >
         <h1>Draft.js Editor</h1>
         <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
@@ -102,12 +104,10 @@ class Document extends React.Component {
           />
         </div>
       </div>
+    </div>
     );
   }
 }
-
-
-
 
 ReactDOM.render(<Document />,
    document.getElementById('root'));
