@@ -7,5 +7,5 @@ var ReactDOM = require('react-dom');
 // .then(text => console.log(text))
 // .catch(err => {throw err})
 
-ReactDOM.render(<p>React lives!</p>,
+ReactDOM.render(<p>Mohammad Syed</p>,
    document.getElementById('root'));
