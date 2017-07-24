@@ -49,33 +49,40 @@ class Document extends React.Component {
 
   _onBulletedClick() {
     this.onChange(RichUtils.toggleBlockType(
-            this.state.editorState,
-            'unordered-list-item'
+      this.state.editorState,
+      'unordered-list-item'
     ));
   }
 
   _onNumberedClick() {
     this.onChange(RichUtils.toggleBlockType(
-            this.state.editorState,
-            'ordered-list-item'
+      this.state.editorState,
+      'ordered-list-item'
     ));
   }
 
   render() {
     return (
-      <div id="content">
-        <h1>Draft.js Editor</h1>
-        <button onClick={this._onBoldClick.bind(this)}>Bold</button>
-        <button onClick={this._onItalicClick.bind(this)}>Italic</button>
-        <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
-        <button onClick={this._onCodeClick.bind(this)}>Code</button>
-        <button onClick={this._onBulletedClick.bind(this)}>Bulleted List</button>
-        <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
-        <div className="editor">
-          <Editor
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-          />
+      <div>
+        <div id="navigation">
+          <button>Back to Documents Portal</button>
+          <h1>Sample Document</h1>
+          <h4>Document ID: _replace_this_please_ </h4>
+          <button>Save Changes</button>
+        </div>
+        <div id="content">
+          <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+          <button onClick={this._onItalicClick.bind(this)}>Italic</button>
+          <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
+          <button onClick={this._onCodeClick.bind(this)}>Code</button>
+          <button onClick={this._onBulletedClick.bind(this)}>Bulleted List</button>
+          <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
+          <div className="editor">
+            <Editor
+              editorState={this.state.editorState}
+              onChange={this.onChange}
+            />
+          </div>
         </div>
       </div>
     );
