@@ -1,0 +1,13 @@
+var React = require('React');
+
+
+export default class Login extends React.Component {
+  render() {
+    return(
+      <div>
+      <h1>LOGIN!</h1>
+      </div>
+    );
+  }
+
+}
