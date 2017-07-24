@@ -3,3 +3,10 @@ The team comprises of full-stack engineers, Danhui, Andrew and Mohammad (perhaps
 
 We have multiple milestones to hit so we can must move fast and effectively.
 ## The technologies that will be used are React, Redux, Express, Node, and some other fun stuff.
+
+
+### Day 1: 
+Reading and understanding. 
+
+Recommended articles:
+https://medium.com/@adrianli/a-beginner-s-guide-to-draft-js-d1823f58d8cc
