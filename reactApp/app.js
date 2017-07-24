@@ -1,6 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-import {Editor, EditorState} from 'draft-js';
+import {Editor, EditorState, RichUtils} from 'draft-js';
 
 
 /* This can check if your electron app can communicate with your backend */
@@ -13,12 +13,25 @@ class Document extends React.Component {
   constructor(props) {
     super(props);
     this.state = {editorState: EditorState.createEmpty()};
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      console.log(editorState);
+      this.setState({editorState});
+    };
   }
+
+  _onBoldClick() {
+    console.log(this);
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      "BOLD"
+    ));
+  }
+
   render() {
     return (
       <div id="content">
         <h1>Draft.js Editor</h1>
+        <button onClick={this._onBoldClick.bind(this)}>Bold</button>
         <div className="editor">
           <Editor
             editorState={this.state.editorState}
