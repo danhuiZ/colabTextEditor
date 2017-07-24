@@ -3,7 +3,7 @@ const app = express();
 
 // Example route
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.send('hello world');
 });
 
 app.listen(3000, function () {
