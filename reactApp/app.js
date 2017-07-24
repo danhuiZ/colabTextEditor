@@ -12,7 +12,7 @@ import {Editor, EditorState, RichUtils} from 'draft-js';
 class Document extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {editorState: EditorState.createEmpty(), alignment: ''};
     this.onChange = (editorState) => {
       this.setState({editorState});
     };
@@ -60,10 +60,26 @@ class Document extends React.Component {
     ));
   }
 
+  _onLeftIndentClick() {
+    this.setState({alignment: 'left'});
+  }
+
+  _onCenterIndentClick() {
+    this.setState({alignment: 'center'});
+
+  }
+
+  _onRightIndentClick() {
+    this.setState({alignment: 'right'});
+  }
+
   render() {
     return (
-      <div id="content">
+      <div id="content" >
         <h1>Draft.js Editor</h1>
+        <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
+        <button onClick={this._onCenterIndentClick.bind(this)}>Center</button>
+        <button onClick={this._onRightIndentClick.bind(this)}>Right</button>
         <button onClick={this._onBoldClick.bind(this)}>Bold</button>
         <button onClick={this._onItalicClick.bind(this)}>Italic</button>
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
@@ -74,6 +90,8 @@ class Document extends React.Component {
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange}
+            textAlignment={this.state.alignment}
+            spellCheck={true}
           />
         </div>
       </div>
