@@ -6,6 +6,10 @@ We have multiple milestones to hit so we can must move fast and effectively.
 
 
 ### Day 1: 
+
+Milestones and Goals: 
+https://docs.google.com/document/d/1VB4cwsCERCTwL74aeoBd1UpH9vDLiZTSYb8ocbxusrQ/edit
+
 Reading and understanding. 
 
 Recommended articles:
