@@ -15,7 +15,9 @@ class Document extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {editorState: EditorState.createEmpty(), alignment: ''};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      alignment: ''};
 
     this.onChange = (editorState) => {
       this.setState({editorState});
@@ -53,7 +55,6 @@ class Document extends React.Component {
       'CODE'
     ));
   }
-
 
   _onBulletedClick() {
     this.onChange(RichUtils.toggleBlockType(
