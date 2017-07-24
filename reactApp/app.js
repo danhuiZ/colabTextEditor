@@ -13,7 +13,10 @@ class Document extends React.Component {
   constructor(props) {
     super(props);
     this.state = {editorState: EditorState.createEmpty()};
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      console.log(editorState);
+      this.setState({editorState});
+    };
   }
 
   _onBoldClick() {
