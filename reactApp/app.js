@@ -22,7 +22,28 @@ class Document extends React.Component {
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
-      "BOLD"
+      'BOLD'
+    ));
+  }
+
+  _onItalicClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'ITALIC'
+    ));
+  }
+
+  _onUnderlineClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'UNDERLINE'
+    ));
+  }
+
+  _onCodeClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'CODE'
     ));
   }
 
@@ -31,6 +52,9 @@ class Document extends React.Component {
       <div id="content">
         <h1>Draft.js Editor</h1>
         <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+        <button onClick={this._onItalicClick.bind(this)}>Italic</button>
+        <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
+        <button onClick={this._onCodeClick.bind(this)}>Code</button>
         <div className="editor">
           <Editor
             editorState={this.state.editorState}
