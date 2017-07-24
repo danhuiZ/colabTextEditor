@@ -47,6 +47,20 @@ class Document extends React.Component {
     ));
   }
 
+  _onBulletedClick() {
+    this.onChange(RichUtils.toggleBlockType(
+            this.state.editorState,
+            'unordered-list-item'
+    ));
+  }
+
+  _onNumberedClick() {
+    this.onChange(RichUtils.toggleBlockType(
+            this.state.editorState,
+            'ordered-list-item'
+    ));
+  }
+
   render() {
     return (
       <div id="content">
@@ -55,6 +69,8 @@ class Document extends React.Component {
         <button onClick={this._onItalicClick.bind(this)}>Italic</button>
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
         <button onClick={this._onCodeClick.bind(this)}>Code</button>
+        <button onClick={this._onBulletedClick.bind(this)}>Bulleted List</button>
+        <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
         <div className="editor">
           <Editor
             editorState={this.state.editorState}
