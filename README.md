@@ -1,5 +1,3 @@
-# colabTextEditor
-
 # A team of 3, venturing out to build the prestigious Google Documents Platform. 
 The team comprises of full-stack engineers, Danhui, Andrew and Mohammad (perhaps Yash too but we're waiting).
 
