@@ -1,6 +1,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import { Editor, EditorState, RichUtils } from 'draft-js';
+// import { TwitterPicker } from 'react-color';
+// import { Collapse } from 'react-collapse';
 
 
 /* This can check if your electron app can communicate with your backend */
@@ -12,9 +14,15 @@ import {Editor, EditorState, RichUtils} from 'draft-js';
 class Document extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {editorState: EditorState.createEmpty(), alignment: ''};
+
     this.onChange = (editorState) => {
       this.setState({editorState});
+    };
+    this.styleMap = {
+      'COLOR': {color: 'red'},
+      'FONT': {fontSize: 20}
     };
   }
 
@@ -46,6 +54,7 @@ class Document extends React.Component {
     ));
   }
 
+
   _onBulletedClick() {
     this.onChange(RichUtils.toggleBlockType(
       this.state.editorState,
@@ -57,6 +66,20 @@ class Document extends React.Component {
     this.onChange(RichUtils.toggleBlockType(
       this.state.editorState,
       'ordered-list-item'
+    ));
+  }
+
+  onColorClick(){
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'COLOR'
+    ));
+  }
+
+  onFontClick(){
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'FONT'
     ));
   }
 
@@ -83,25 +106,27 @@ class Document extends React.Component {
           <h4>Document ID: _replace_this_please_ </h4>
           <button>Save Changes</button>
         </div>
-      </div>
-      <div id="content" >
-        <h1>Draft.js Editor</h1>
-        <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
-        <button onClick={this._onCenterIndentClick.bind(this)}>Center</button>
-        <button onClick={this._onRightIndentClick.bind(this)}>Right</button>
-        <button onClick={this._onBoldClick.bind(this)}>Bold</button>
-        <button onClick={this._onItalicClick.bind(this)}>Italic</button>
-        <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
-        <button onClick={this._onCodeClick.bind(this)}>Code</button>
-        <button onClick={this._onBulletedClick.bind(this)}>Bulleted List</button>
-        <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
-        <div className="editor">
-          <Editor
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-            textAlignment={this.state.alignment}
-            spellCheck={true}
-          />
+        <div id="content">
+          <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
+          <button onClick={this._onCenterIndentClick.bind(this)}>Center</button>
+          <button onClick={this._onRightIndentClick.bind(this)}>Right</button>
+          <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+          <button onClick={this._onItalicClick.bind(this)}>Italic</button>
+          <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
+          <button onClick={this._onCodeClick.bind(this)}>Code</button>
+          <button onClick={this.onColorClick.bind(this)}>Font Color</button>
+          <button onClick={this.onFontClick.bind(this)}>Font Size</button>
+          <button onClick={this._onBulletedClick.bind(this)}>Bulleted List</button>
+          <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
+          <div className="editor">
+            <Editor
+              customStyleMap={this.styleMap}
+              editorState={this.state.editorState}
+              onChange={this.onChange}
+              spellCheck={true}
+              textAlignment={this.state.alignment}
+            />
+          </div>
         </div>
       </div>
     </div>
