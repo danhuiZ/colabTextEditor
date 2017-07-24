@@ -14,7 +14,6 @@ class Document extends React.Component {
     super(props);
     this.state = {editorState: EditorState.createEmpty()};
     this.onChange = (editorState) => {
-      console.log(editorState);
       this.setState({editorState});
     };
   }
