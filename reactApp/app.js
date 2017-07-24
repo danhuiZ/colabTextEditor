@@ -14,9 +14,9 @@ import { Editor, EditorState, RichUtils } from 'draft-js';
 class Document extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      editorState: EditorState.createEmpty(),
-    };
+
+    this.state = {editorState: EditorState.createEmpty(), alignment: ''};
+
     this.onChange = (editorState) => {
       this.setState({editorState});
     };
@@ -83,10 +83,23 @@ class Document extends React.Component {
     ));
   }
 
+  _onLeftIndentClick() {
+    this.setState({alignment: 'left'});
+  }
+
+  _onCenterIndentClick() {
+    this.setState({alignment: 'center'});
+
+  }
+
+  _onRightIndentClick() {
+    this.setState({alignment: 'right'});
+  }
 
   render() {
     return (
-      <div>
+    <div>
+       <div>
         <div id="navigation">
           <button>Back to Documents Portal</button>
           <h1>Sample Document</h1>
@@ -94,6 +107,9 @@ class Document extends React.Component {
           <button>Save Changes</button>
         </div>
         <div id="content">
+          <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
+          <button onClick={this._onCenterIndentClick.bind(this)}>Center</button>
+          <button onClick={this._onRightIndentClick.bind(this)}>Right</button>
           <button onClick={this._onBoldClick.bind(this)}>Bold</button>
           <button onClick={this._onItalicClick.bind(this)}>Italic</button>
           <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
@@ -107,14 +123,16 @@ class Document extends React.Component {
               customStyleMap={this.styleMap}
               editorState={this.state.editorState}
               onChange={this.onChange}
+              spellCheck={true}
+              textAlignment={this.state.alignment}
             />
           </div>
         </div>
       </div>
+    </div>
     );
   }
 }
-
 
 ReactDOM.render(<Document />,
    document.getElementById('root'));
