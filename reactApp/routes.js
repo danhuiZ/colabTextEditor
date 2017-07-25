@@ -6,7 +6,7 @@ import { Switch, Route } from 'react-router-dom';
 const Routes = () => (
   <Switch>
     <Route exact path ="/" component={Document} />
-    <Route path ="/login" component={Login} />
+    <Route path="/login" component={Login} />
   </Switch>
 );
 
