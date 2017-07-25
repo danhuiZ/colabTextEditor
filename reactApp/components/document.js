@@ -2,20 +2,22 @@ var React = require('react');
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { Link } from 'react-router-dom';
 
+const styleMap = {
+  'COLOR': {color: 'red'},
+  'FONT': {fontSize: 30}
+};
 
-
-export default class Document extends React.Component {
+class Document extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {editorState: EditorState.createEmpty(), alignment: ''};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      alignment: ''
+    };
 
     this.onChange = (editorState) => {
       this.setState({editorState});
-    };
-    this.styleMap = {
-      'COLOR': {color: 'red'},
-      'FONT': {fontSize: 30}
     };
   }
 
@@ -94,6 +96,8 @@ export default class Document extends React.Component {
     <div>
        <div>
         <div id="navigation">
+          <button><Link to='/login'>Login</Link></button>
+          <button><Link to='/registration'>Register</Link></button>
           <button>Back to Documents Portal</button>
           <h1>Sample Document</h1>
           <h4>Document ID: _replace_this_please_ </h4>
@@ -113,7 +117,7 @@ export default class Document extends React.Component {
           <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
           <div className="editor">
             <Editor
-              customStyleMap={this.styleMap}
+              customStyleMap={styleMap}
               editorState={this.state.editorState}
               onChange={this.onChange}
               spellCheck={true}
@@ -126,3 +130,5 @@ export default class Document extends React.Component {
     );
   }
 }
+
+export default Document;
