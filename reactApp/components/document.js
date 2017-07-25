@@ -96,8 +96,8 @@ class Document extends React.Component {
     <div>
        <div>
         <div id="navigation">
-          <button><Link to='/login'>Login</Link></button>
-          <button><Link to='/registration'>Register</Link></button>
+          <button><Link to='/login'>This is the login</Link></button>
+          <button><Link to='/registration'>This is the registration</Link></button>
           <button>Back to Documents Portal</button>
           <h1>Sample Document</h1>
           <h4>Document ID: _replace_this_please_ </h4>
