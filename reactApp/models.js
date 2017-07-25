@@ -6,6 +6,7 @@ var userSchema = mongoose.Schema({
 });
 
 var documentSchema = mongoose.Schema({
+  title: String,
   ownerIDs: Array,
   collaboratorIDs: Array,
   hashedpassword: String
