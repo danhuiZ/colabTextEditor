@@ -1,13 +1,24 @@
 const express = require('express');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-var bodyParser = require('body-parser');
+
 const app = express();
+mongoose.connect(process.env.MONGODB_URI, function(err) {
+  if(err) {
+    console.log('Error');
+  } else {
+    console.log('Connected :)');
+  }
+});
 
 var User = require('./models.js').User;
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 
 // PASSPORT FLOW
 
@@ -22,7 +33,6 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new LocalStrategy(function(username, password, done) {
-  console.log('this is the user name', username);
   // Find the user with the given username
   User.findOne({ username: username }, function (err, user) {
     // if there's an error, finish trying to authenticate (auth failed)
@@ -32,7 +42,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
     }
     // if no user present, auth failed
     if (!user) {
-      console.log('shit boy');
       return done(null, false, { message: 'Incorrect username.' });
     }
     // if passwords do not match, auth failed
@@ -47,19 +56,13 @@ passport.use(new LocalStrategy(function(username, password, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use('/', passport);
-
-// PASSPORT FLOW
-
-// Example route
-app.get('/', function (req, res) {
-  res.send('i got here because i failed');
+app.post('/login', passport.authenticate('local', { failureRedirect: '/failed' }),function(req, res) {
+  console.log(req.body);
+  res.json({success: true});
 });
 
-// need to fix redirects as well
-app.post('/login', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
-  console.log(req.body);
-  res.send(200);
+app.get('/failed', function(req, res) {
+  res.json({success: false});
 });
 
 // need to fix this
@@ -74,9 +77,8 @@ app.post('/register', function(req, res) {
       return;
     }
     console.log(user);
-    res.redirect('/login');
   });
-  res.sendStatus(200);
+  res.json({success: true});
 });
 
 // need to fix this
