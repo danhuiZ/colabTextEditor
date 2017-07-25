@@ -10,6 +10,8 @@ import { HashRouter } from 'react-router-dom';
 // .then(resp => resp.text())
 // .then(text => console.log(text))
 // .catch(err => {throw err})
+require('./css/main.css');
+require('./css/Draft.css');
 
 render(
   <HashRouter><Routes /></HashRouter>,
