@@ -4,7 +4,7 @@ var LocalStrategy = require('passport-local');
 var bodyParser = require('body-parser');
 const app = express();
 
-var User = null;
+var User = require('./models.js').User;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
