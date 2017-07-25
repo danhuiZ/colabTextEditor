@@ -1,33 +1,33 @@
 var React = require('React');
 
-
 export default class AddSharedDoc extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      addSharedDocID: '',
+      sharedDocID: '',
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    this.setState({addSharedDocID: event.target.value});
+    this.setState({
+      sharedDocID: event.target.value
+    });
   }
 
-  handleSubmit(event) {
-    alert('An existing shared document was submitted: ' + this.state.addSharedDocID);
+  handleSubmit() {
     event.preventDefault();
+    alert('Searching for this shared document and then ask for password to access: ' + this.state.sharedDocID);
+    this.setState({
+        sharedDocID: ''
+    })
   }
-
 
   render() {
     return(
-      <form onSubmit={this.handleSubmit}>
-        <input type="text" value={this.state.addSharedDocID} onChange={this.handleChange} placeholder="paste a doc ID shared with you"/>
-        <input type="submit" value="Add Shared Document" />
-      </form>
+      <div>
+        <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleChange(event)} placeholder="paste a doc ID shared with you"/>
+        <button onClick={() => this.handleSubmit()}>Search for Shared Doc</button>
+      </div>
     );
   }
-
 }

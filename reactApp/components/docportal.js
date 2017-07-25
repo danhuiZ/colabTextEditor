@@ -1,4 +1,6 @@
 var React = require('React');
+import NewDoc from './newDoc';
+import AddSharedDoc from './addSharedDoc';
 
 
 export default class DocPortal extends React.Component {
@@ -8,6 +10,10 @@ export default class DocPortal extends React.Component {
       myDocs: [],
     };
   }
+
+  // componentWillMount(){
+  //    load the users documents from mongo into this.state.myDocs
+  // }j
 
   render() {
     return(
