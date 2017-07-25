@@ -56,9 +56,13 @@ passport.use(new LocalStrategy(function(username, password, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.post('/login', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
+app.post('/login', passport.authenticate('local', { failureRedirect: '/failed' }),function(req, res) {
   console.log(req.body);
-  res.redirect('http://localhost:8080/');
+  res.json({success: true});
+});
+
+app.get('/failed', function(req, res) {
+  res.json({success: false});
 });
 
 // need to fix this

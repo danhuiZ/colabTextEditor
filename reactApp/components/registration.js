@@ -28,8 +28,13 @@ class Registration extends React.Component {
       username: this.state.username,
       password: this.state.password
     })
-    .then(function(resp) {
-      console.log('We got a response!', resp);
+    .then(function({ data }) {
+      if(data.success) {
+        console.log('The user should be taken to the documents');
+      }
+    })
+    .catch(function(err) {
+      console.log('There is a massive error :)', err);
     });
   }
 
@@ -41,7 +46,7 @@ class Registration extends React.Component {
         <br></br>
         <input name="password" placeholder="Enter a password..." value={this.state.password} onChange={(e) => this.handlePass(e)} id="password"></input>
         <br></br>
-        <button onClick={() => this.handleSubmit()}></button>
+        <button onClick={() => this.handleSubmit()}>Submit</button>
       </div>
     );
   }
