@@ -5,28 +5,31 @@ export default class NewDoc extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newDocID: '',
+      docID: '',
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    this.setState({value: event.target.newDocID});
+    this.setState({
+      docID: event.target.value
+    });
   }
 
-  handleSubmit(event) {
-    alert('A new document was submitted: ' + this.state.newDocID);
+  handleSubmit() {
+    alert('A new document was submitted: ' + this.state.docID);
     event.preventDefault();
+    this.setState({
+      docID: ''
+    })
   }
 
 
   render() {
     return(
-      <form onSubmit={this.handleSubmit}>
-        <input type="text" value={this.state.newDocID} onChange={this.handleChange} placeholder="new document title"/>
-        <input type="submit" value="Create Document" />
-      </form>
+      <div>
+        <input type="text" value={this.state.docID} onChange={(event) => this.handleChange(event)} placeholder="New Document Title"/>
+        <button onClick={() => this.handleSubmit()}>Create Document</button>
+      </div>
     );
   }
 
