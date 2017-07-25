@@ -24,13 +24,14 @@ class Registration extends React.Component {
   }
 
   handleSubmit() {
+    var self = this;
     axios.post('http://localhost:3000/register', {
       username: this.state.username,
       password: this.state.password
     })
     .then(function({ data }) {
       if(data.success) {
-        console.log('The user should be taken to the documents');
+        self.props.history.push('/');
       }
     })
     .catch(function(err) {
