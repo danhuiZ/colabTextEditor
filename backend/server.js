@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
+var session = require('express-session');
 
 const app = express();
 mongoose.connect(process.env.MONGODB_URI, function(err) {
@@ -14,11 +15,11 @@ mongoose.connect(process.env.MONGODB_URI, function(err) {
 });
 
 var User = require('./models.js').User;
+var Document = require('./models.js').Document;
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 // PASSPORT FLOW
 
@@ -53,6 +54,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
   });
 }));
 
+app.use(session({ secret: 'frank_ocean' }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -80,6 +82,58 @@ app.post('/register', function(req, res) {
   });
   res.json({success: true});
 });
+
+app.post('/newdoc', function(req, res) {
+
+  console.log("USER LOGGED IN ", req.user);
+
+  // User.findOne({username: })
+    var newDoc = new Document({
+      title: req.body.title,
+      ownerIDs: [req.user._id],
+      collaboratorIDs: [req.user._id],
+      hashedpassword: req.body.password
+    })
+
+    newDoc.save(function(err, doc) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log('SAVED NEW DOC', doc);
+      res.json({
+        success: true,
+        document: doc
+      });
+    });
+})
+
+app.get('/getdocs', function(req, res) {
+
+  var user_id = req.user._id;
+  var found_docs = [];
+
+  Document.find({}, function( err, documents ) {
+    if(err){
+      res.json({
+        success: false
+      })
+    }
+
+    for(var i = 0; i < documents.length; i++){
+      if(documents[i].collaboratorIDs.indexOf(user_id) !== -1){
+        found_docs.push(documents[i]);
+      }
+    }
+
+    res.json({
+      success: true,
+      found_docs: found_docs
+    })
+
+  })
+
+})
 
 // need to fix this
 app.get('/logout', function(req, res) {

@@ -26,6 +26,7 @@ class Login extends React.Component {
   }
 
   handleSubmit() {
+    var self = this;
     axios.post('http://localhost:3000/login', {
       username: this.state.username,
       password: this.state.password
@@ -33,6 +34,7 @@ class Login extends React.Component {
     .then(function({ data }) {
       if(data.success) {
         console.log('The user should be taken to documents page');
+        self.props.history.push('/doc-portal');
       } else {
         console.log('The user should be asked to login again');
       }
