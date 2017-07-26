@@ -8,6 +8,8 @@ injectTapEventPlugin();
 
 require('./css/main.css');
 
+console.log('yayayay :) ');
+
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
 // .then(resp => resp.text())
