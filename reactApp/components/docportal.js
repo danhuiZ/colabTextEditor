@@ -23,7 +23,7 @@ export default class DocPortal extends React.Component {
   handleNewDocSubmit() {
     //update with material modal
     var self = this;
-    var title = this.state.docID
+    var title = this.state.docID;
     var password = smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
       //console.log('PASSWORD', password);
@@ -37,15 +37,15 @@ export default class DocPortal extends React.Component {
           var newMyDocs = self.state.myDocs.concat(data.document);
           self.setState({
             myDocs: newMyDocs
-          })
+          });
           self.props.history.push(`/documents/${data.document._id}`);
         }else{
           console.log('failure making doc. redirect back to doc portal');
         }
       });
 
-    })
-    this.setState({
+    });
+    self.setState({
       docID: ''
     });
   }
@@ -73,12 +73,12 @@ export default class DocPortal extends React.Component {
         if(data.success === true){
             self.props.history.push(`/documents/${sharedDocID}`);
         }
-      })
+      });
 
-      this.setState({
+      self.setState({
           sharedDocID: ''
-      })
-    })
+      });
+    });
 
   }
 
@@ -91,9 +91,9 @@ export default class DocPortal extends React.Component {
       if(data.success) {
         self.setState({
           myDocs: data.found_docs
-        })
+        });
       }
-    })
+    });
   }
 
   render() {
@@ -108,7 +108,7 @@ export default class DocPortal extends React.Component {
           <h4>My Documents</h4>
           <ul>
             {this.state.myDocs.map( doc => {
-              return <li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>
+              return <li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>;
             })}
           </ul>
         </div>
