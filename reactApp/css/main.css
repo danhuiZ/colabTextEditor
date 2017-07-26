@@ -1,11 +1,45 @@
 * {
  box-sizing: border-box;
+ font-family: 'Roboto', sans-serif;
 }
-#content {
- width: 480px;
- margin: 0 auto;
+
+h1 {
+  color: rgba(72, 133, 237, 1);
+  text-align: center;
 }
+
+.toolbar {
+  border-bottom: 2px solid gray;
+  padding: 10px;
+}
+
+.toolbar > * {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.right-align {
+  text-align: right;
+}
+
 .editor {
- border: 1px solid grey;
- padding: 6px;
+  padding: 10px;
+}
+
+.button {
+  background-color: rgba(72, 133, 237, 0.8);
+  margin-left: 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.docID {
+  float: right;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-right: 10px;
 }
