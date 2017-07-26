@@ -53,6 +53,8 @@ passport.use(new LocalStrategy(function(username, password, done) {
   });
 }));
 
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -75,10 +77,11 @@ app.post('/register', function(req, res) {
     if (err) {
       console.log(err);
       return;
+    } else {
+      console.log(user);
+      res.json({success: true});
     }
-    console.log(user);
   });
-  res.json({success: true});
 });
 
 // need to fix this
