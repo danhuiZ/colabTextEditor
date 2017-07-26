@@ -173,6 +173,16 @@ app.post('/search-shared', function(req, res) {
   var user_id = req.user._id;
 
   // searches for a document with the docid provided by the user in docportal search
+  console.log('HERE FOR NOW ', typeof req.body.docID);
+
+  if(req.body.docID.length !== 24){
+    res.json({
+      success: false,
+      message: 'Invalid DocID'
+    })
+    return;
+  }
+
   Document.findById(req.body.docID, function(err, doc) {
     if(err) {
       console.log("There was an error :)", err);

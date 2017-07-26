@@ -3,8 +3,6 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 
-// or change it to axios request
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +25,8 @@ class Login extends React.Component {
     this.setState({password: e.target.value});
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
+    e.preventDefault();
     var self = this;
     axios.post('http://localhost:3000/login', {
       username: this.state.username,
@@ -35,7 +34,6 @@ class Login extends React.Component {
     })
     .then(function({ data }) {
       console.log('This log should contain the data', data);
-
       if(data.success) {
         console.log('The user should be taken to documents page');
         self.props.history.push('/doc-portal');

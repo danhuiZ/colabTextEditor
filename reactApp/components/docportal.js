@@ -57,6 +57,9 @@ export default class DocPortal extends React.Component {
 
   handleSharedDocSubmit() {
     var sharedDocID = this.state.sharedDocID;
+    this.setState({
+        sharedDocID: ''
+    });
     var self = this;
     // ask for password
     smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
@@ -70,14 +73,21 @@ export default class DocPortal extends React.Component {
         // process response and either stay on doc portal with the proper alert or redirect to populated document page
         if(data.success === true){
             self.props.history.push(`/documents/${sharedDocID}`);
+        }else if(data.message === 'Invalid DocID'){
+            smalltalk.alert('TRY AGAIN', 'Invalid DocID')
+            .then( function() {
+              console.log('okie');
+            })
+        }else if(data.message === 'Incorrect password'){
+            smalltalk.alert('TRY AGAIN', 'Invalid Password')
+            .then( function() {
+              console.log('okie2');
+            })
         }
-      });
-
-      self.setState({
-          sharedDocID: ''
-      });
+      })
     });
   }
+
 
   componentWillMount() {
     //load all the documents into the state of this component under myDocs
