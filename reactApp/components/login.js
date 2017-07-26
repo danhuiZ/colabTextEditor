@@ -14,8 +14,6 @@ class Login extends React.Component {
       status: ''
     };
 
-    console.log('happy man');
-
     this.handleUser = this.handleUser.bind(this);
     this.handlePass = this.handlePass.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -36,6 +34,8 @@ class Login extends React.Component {
       password: this.state.password
     })
     .then(function({ data }) {
+      console.log('This log should contain the data', data);
+
       if(data.success) {
         console.log('The user should be taken to documents page');
         self.props.history.push('/doc-portal');
@@ -80,11 +80,11 @@ class Login extends React.Component {
             </div>
             <div className="card-action right-align">
               <Link to='/registration'>To Registration</Link>
-              <input
+              <button
                 type="submit"
                 className="btn green waves-effect waves-light"
                 onClick={() => this.handleSubmit()}
-                value="Login" />
+                >Login</button>
             </div>
           </form>
         </div>
