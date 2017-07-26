@@ -20,10 +20,18 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
 class Document extends React.Component {
   constructor(props) {
     super(props);
+<<<<<<< HEAD
     this.state = {
       editorState: EditorState.createEmpty(),
       inlineStyles: {}
     };
+=======
+
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      alignment: ''};
+
+>>>>>>> 5363a3987b773db510ab1ea0db0f3d933e95cd4d
     this.onChange = (editorState) => {
       this.setState({editorState});
     };

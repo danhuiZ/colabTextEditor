@@ -6,7 +6,6 @@ import { HashRouter } from 'react-router-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-// require('./css/Draft.css');
 require('./css/main.css');
 
 /* This can check if your electron app can communicate with your backend */
@@ -18,6 +17,3 @@ require('./css/main.css');
 render(
   <MuiThemeProvider><HashRouter><Routes /></HashRouter></MuiThemeProvider>,
    document.getElementById('root'));
-
-
-//
