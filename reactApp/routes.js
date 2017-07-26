@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 import Document from './components/document.js';
 import Login from './components/login.js';
 import Registration from './components/registration.js';
@@ -7,8 +7,9 @@ import { Switch, Route } from 'react-router-dom';
 
 const Routes = () => (
   <Switch>
-    <Route exact path ="/" component={DocPortal} />
+    <Route exact path ="/" component={Login} />
     <Route exact path="/registration" component={Registration} />
+    <Route exact path="/docportal" component={DocPortal} />
     <Route exact path="/documents" component={Document} />
   </Switch>
 );

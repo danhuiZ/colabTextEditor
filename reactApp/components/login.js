@@ -34,7 +34,7 @@ class Login extends React.Component {
     })
     .then(function({ data }) {
       if(data.success) {
-        self.props.history.push('/documents');
+        self.props.history.push('/docportal');
       } else {
         self.setState({status: 'There was a problem with logging in!'});
       }
