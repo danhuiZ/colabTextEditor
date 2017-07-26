@@ -15,9 +15,7 @@ mongoose.connect(process.env.MONGODB_URI, function(err) {
   }
 });
 
-var User = require('./models.js').User;
-var Document = require('./models.js').Document;
-
+var { User, Document } = require('./models.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -170,8 +168,6 @@ app.post('/save', function(req, res) {
 
 
 app.post('/search-shared', function(req, res) {
-  var user_id = req.user._id;
-
   // searches for a document with the docid provided by the user in docportal search
   Document.findById(req.body.docID, function(err, doc) {
     if(err) {

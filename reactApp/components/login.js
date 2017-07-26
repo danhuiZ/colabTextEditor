@@ -79,7 +79,7 @@ class Login extends React.Component {
               </div>
             </div>
             <div className="card-action right-align">
-              <a><Link to='/registration'>To Registration</Link></a>
+              <Link to='/registration'>To Registration</Link>
               <input
                 type="submit"
                 className="btn green waves-effect waves-light"

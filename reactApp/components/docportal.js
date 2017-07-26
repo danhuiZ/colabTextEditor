@@ -96,7 +96,7 @@ export default class DocPortal extends React.Component {
 
   render() {
     return(
-      <div>
+      <div className="docportal">
         <div className = "new-doc">
           <input type="text" value={this.state.docID} onChange={(event) => this.handleNewDocChange(event)} placeholder="New Document Title"/>
           <button onClick={() => this.handleNewDocSubmit()}>Create Document</button>
