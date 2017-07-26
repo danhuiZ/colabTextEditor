@@ -1,10 +1,22 @@
 const express = require('express');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-var bodyParser = require('body-parser');
-const app = express();
+var session = require('express-session');
 
-var User = null;
+const app = express();
+mongoose.connect(process.env.MONGODB_URI, function(err) {
+  if(err) {
+    console.log('Error');
+  } else {
+    console.log('Connected :)');
+  }
+});
+
+var User = require('./models.js').User;
+var Document = require('./models.js').Document;
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -22,7 +34,6 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new LocalStrategy(function(username, password, done) {
-  console.log('this is the user name', username);
   // Find the user with the given username
   User.findOne({ username: username }, function (err, user) {
     // if there's an error, finish trying to authenticate (auth failed)
@@ -32,7 +43,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
     }
     // if no user present, auth failed
     if (!user) {
-      console.log('shit boy');
       return done(null, false, { message: 'Incorrect username.' });
     }
     // if passwords do not match, auth failed
@@ -44,22 +54,17 @@ passport.use(new LocalStrategy(function(username, password, done) {
   });
 }));
 
+app.use(session({ secret: 'frank_ocean' }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use('/', passport);
-
-// PASSPORT FLOW
-
-// Example route
-app.get('/', function (req, res) {
-  res.send('i got here because i failed');
+app.post('/login', passport.authenticate('local', { failureRedirect: '/failed' }),function(req, res) {
+  console.log(req.body);
+  res.json({success: true});
 });
 
-// need to fix redirects as well
-app.post('/login', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
-  console.log(req.body);
-  res.send(200);
+app.get('/failed', function(req, res) {
+  res.json({success: false});
 });
 
 // need to fix this
@@ -72,12 +77,64 @@ app.post('/register', function(req, res) {
     if (err) {
       console.log(err);
       return;
+    } else {
+      console.log(user);
+      res.json({success: true});
     }
-    console.log(user);
-    res.redirect('/login');
   });
-  res.sendStatus(200);
 });
+
+app.post('/newdoc', function(req, res) {
+
+  console.log("USER LOGGED IN ", req.user);
+
+  // User.findOne({username: })
+    var newDoc = new Document({
+      title: req.body.title,
+      ownerIDs: [req.user._id],
+      collaboratorIDs: [req.user._id],
+      hashedpassword: req.body.password
+    })
+
+    newDoc.save(function(err, doc) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log('SAVED NEW DOC', doc);
+      res.json({
+        success: true,
+        document: doc
+      });
+    });
+})
+
+app.get('/getdocs', function(req, res) {
+
+  var user_id = req.user._id;
+  var found_docs = [];
+
+  Document.find({}, function( err, documents ) {
+    if(err){
+      res.json({
+        success: false
+      })
+    }
+
+    for(var i = 0; i < documents.length; i++){
+      if(documents[i].collaboratorIDs.indexOf(user_id) !== -1){
+        found_docs.push(documents[i]);
+      }
+    }
+
+    res.json({
+      success: true,
+      found_docs: found_docs
+    })
+
+  })
+
+})
 
 // need to fix this
 app.get('/logout', function(req, res) {
