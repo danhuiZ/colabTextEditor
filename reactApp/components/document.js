@@ -25,6 +25,7 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
 }));
 
 class Document extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -223,9 +224,6 @@ class Document extends React.Component {
         <h1>{this.state.title}</h1>
         <div className="navigation">
           <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
-          {/* <button><Link to='/login'>This is the login</Link></button>
-          <button><Link to='/registration'>This is the registration</Link></button>
-          <button><Link to='/doc-portal'>Back to Documents Portal</Link></button> */}
           <Link to='/doc-portal'>
             <FlatButton
               className="button"

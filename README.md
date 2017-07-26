@@ -9,12 +9,11 @@ https://docs.google.com/document/d/1VB4cwsCERCTwL74aeoBd1UpH9vDLiZTSYb8ocbxusrQ/
 
 ### Day 1: 
 
-
-#### Recommended Articles and Documentation:
-https://medium.com/@adrianli/a-beginner-s-guide-to-draft-js-d1823f58d8cc 
-https://draftjs.org/docs/quickstart-api-basics.html#content
-https://www.draft-js-plugins.com/plugin/alignment
+Completed Milestone 1. 
 
 ### Day 2: 
 
-Today: Do styling, finish Passport.JS login flow, create functional link between front-end and back end- set up DB.
+90% done with Milestone 2. Need to add collaboration feature and "Remember to Save" alert.
+
+### Day 3: 
+
