@@ -39,8 +39,7 @@ export default class DocPortal extends React.Component {
           self.setState({
             myDocs: newMyDocs
           })
-          //how should we make it the proper page???
-          self.props.history.push('/documents');
+          self.props.history.push(`/documents/${data.document._id}`);
         }else{
           console.log('failure making doc. redirect back to doc portal');
         }
@@ -81,7 +80,6 @@ export default class DocPortal extends React.Component {
   }
 
   render() {
-    console.log('STATE HErE', this.state.myDocs);
     return(
       <div>
         <div className = "new-doc">
@@ -93,8 +91,7 @@ export default class DocPortal extends React.Component {
           <h4>My Documents</h4>
           <ul>
             {this.state.myDocs.map( doc => {
-              //return <li key={doc._id}><a href={'/document/'+doc._id}>{doc.title}</a></li>
-              return <li key={doc._id}><Link to='/documents'>{doc.title}</Link></li>
+              return <li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>
             })}
           </ul>
         </div>

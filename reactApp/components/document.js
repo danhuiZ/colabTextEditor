@@ -1,8 +1,7 @@
 var React = require('react');
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 import { Link } from 'react-router-dom';
-
-
+import axios from 'axios';
 
 export default class Document extends React.Component {
   constructor(props) {
@@ -10,15 +9,38 @@ export default class Document extends React.Component {
 
     this.state = {
       editorState: EditorState.createEmpty(),
-      alignment: ''};
+      alignment: '',
+      title: ''
+    };
 
     this.onChange = (editorState) => {
       this.setState({editorState});
     };
+
     this.styleMap = {
       'COLOR': {color: 'red'},
       'FONT': {fontSize: 30}
     };
+  }
+
+  componentWillMount() {
+    var self = this;
+
+    axios.post('http://localhost:3000/retrieval', {
+      docID: self.props.match.params.docID
+    })
+    .then(function({ data }) {
+      if(data.editorState) {
+        self.setState({
+          editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState))),
+          title: data.title
+        })
+      } else {
+        self.setState({
+          title: data.title
+        })
+      }
+    })
   }
 
   _onBoldClick() {
@@ -91,6 +113,21 @@ export default class Document extends React.Component {
     this.setState({alignment: 'right'});
   }
 
+
+
+  _onSaveClick() {
+    axios.post('http://localhost:3000/save', {
+      docID: this.props.match.params.docID,
+      editorState: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
+    })
+    .then(function(resp) {
+      console.log('Document successfully saved!');
+    })
+    .catch(function(err) {
+      console.log('There was an error', err);
+    })
+  }
+
   render() {
     return (
     <div>
@@ -99,9 +136,9 @@ export default class Document extends React.Component {
           <button><Link to='/login'>This is the login</Link></button>
           <button><Link to='/registration'>This is the registration</Link></button>
           <button><Link to='/doc-portal'>Back to Documents Portal</Link></button>
-          <h1>Sample Document</h1>
-          <h4>Document ID: _replace_this_please_ </h4>
-          <button>Save Changes</button>
+          <h1>{this.state.title}</h1>
+          <h4>{`Document ID: ${this.props.match.params.docID}`}</h4>
+          <button onClick={() => this._onSaveClick()}>Save Changes</button>
         </div>
         <div id="content">
           <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
