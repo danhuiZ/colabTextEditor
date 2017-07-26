@@ -1,10 +1,13 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import { render } from 'react-dom';
 import Routes from './routes.js';
-import { BrowserRouter } from 'react-router-dom';
-// import { TwitterPicker } from 'react-color';
-// import { Collapse } from 'react-collapse';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { HashRouter } from 'react-router-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
+// require('./css/Draft.css');
+require('./css/main.css');
 
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
@@ -12,7 +15,9 @@ import { BrowserRouter } from 'react-router-dom';
 // .then(text => console.log(text))
 // .catch(err => {throw err})
 
-ReactDOM.render(<BrowserRouter>
-  <Routes />
-</BrowserRouter>,
+render(
+  <MuiThemeProvider><HashRouter><Routes /></HashRouter></MuiThemeProvider>,
    document.getElementById('root'));
+
+
+//

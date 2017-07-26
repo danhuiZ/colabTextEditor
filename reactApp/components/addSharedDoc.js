@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 
 
 export default class AddSharedDoc extends React.Component {
