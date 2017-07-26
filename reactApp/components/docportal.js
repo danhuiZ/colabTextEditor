@@ -23,7 +23,6 @@ export default class DocPortal extends React.Component {
   handleNewDocSubmit() {
     //update with material modal
     var self = this;
-
     var title = this.state.docID;
     smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
@@ -45,7 +44,7 @@ export default class DocPortal extends React.Component {
         }
       });
     });
-    this.setState({
+    self.setState({
       docID: ''
     });
   }
@@ -70,12 +69,12 @@ export default class DocPortal extends React.Component {
       .then( function({ data }) {
         // process response and either stay on doc portal with the proper alert or redirect to populated document page
         if(data.success === true){
-          self.props.history.push(`/documents/${sharedDocID}`);
+            self.props.history.push(`/documents/${sharedDocID}`);
         }
       });
 
-      this.setState({
-        sharedDocID: ''
+      self.setState({
+          sharedDocID: ''
       });
     });
   }
@@ -106,7 +105,7 @@ export default class DocPortal extends React.Component {
           <h4>My Documents</h4>
           <ul>
             {this.state.myDocs.map( doc => {
-              return (<li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>);
+              return <li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>;
             })}
           </ul>
         </div>
