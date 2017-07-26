@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 // or change it to axios request
@@ -10,7 +10,8 @@ class Login extends React.Component {
     super(props);
     this.state  = {
       username: '',
-      password: ''
+      password: '',
+      status: ''
     };
     this.handleUser = this.handleUser.bind(this);
     this.handlePass = this.handlePass.bind(this);
@@ -36,16 +37,16 @@ class Login extends React.Component {
         console.log('The user should be taken to documents page');
         self.props.history.push('/doc-portal');
       } else {
-        console.log('The user should be asked to login again');
+        self.setState({status: 'There was a problem with logging in!'});
       }
-
     });
   }
 
   render() {
     return(
       <div>
-        <h1>LOGIN!</h1>
+        <h1>Login!</h1>
+        <p style={{color: 'red'}}>{this.state.status}</p>
         <input name="username" placeholder="Enter a username..." value={this.state.username} onChange={(e) => this.handleUser(e)} id="username"></input>
         <br></br>
         <input name="password" placeholder="Enter a password..." value={this.state.password} onChange={(e) => this.handlePass(e)} id="password"></input>
