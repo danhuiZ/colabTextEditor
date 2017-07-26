@@ -1,4 +1,8 @@
 var React = require('react');
+import smalltalk from 'smalltalk/legacy';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
 
 export default class DocPortal extends React.Component {
   constructor(props) {
@@ -17,11 +21,35 @@ export default class DocPortal extends React.Component {
   }
 
   handleNewDocSubmit() {
-    alert('A new document was submitted: ' + this.state.docID);
-    event.preventDefault();
+    //update with material modal
+    var self = this;
+
+    var title = this.state.docID
+    var password = smalltalk.prompt("Create Document", "Please enter a password for " + this.state.docID + ': ')
+    .then(function(password){
+      //console.log('PASSWORD', password);
+      axios.post('http://localhost:3000/newdoc', {
+        title: title,
+        password: password
+      })
+      .then(function({ data }){
+        if(data.success) {
+          //add new doc to mydocs
+          var newMyDocs = self.state.myDocs.concat(data.document);
+          self.setState({
+            myDocs: newMyDocs
+          })
+          //how should we make it the proper page???
+          self.props.history.push('/documents');
+        }else{
+          console.log('failure making doc. redirect back to doc portal');
+        }
+      });
+
+    })
     this.setState({
       docID: ''
-    })
+    });
   }
 
   handleSharedDocChange(event) {
@@ -38,7 +66,22 @@ export default class DocPortal extends React.Component {
     })
   }
 
+  componentWillMount() {
+    //load all the documents into the state of this component under myDocs
+    var self = this;
+
+    axios.get('http://localhost:3000/getdocs')
+    .then(function({ data }){
+      if(data.success) {
+        self.setState({
+          myDocs: data.found_docs
+        })
+      }
+    })
+  }
+
   render() {
+    console.log('STATE HErE', this.state.myDocs);
     return(
       <div>
         <div className = "new-doc">
@@ -49,8 +92,9 @@ export default class DocPortal extends React.Component {
         <div className = "my-docs">
           <h4>My Documents</h4>
           <ul>
-            {this.state.myDocs.map(doc => {
-              return <li key={doc._id}><a href={'/docs/'+doc._id}>{doc.title}</a></li>
+            {this.state.myDocs.map( doc => {
+              //return <li key={doc._id}><a href={'/document/'+doc._id}>{doc.title}</a></li>
+              return <li key={doc._id}><Link to='/documents'>{doc.title}</Link></li>
             })}
           </ul>
         </div>
