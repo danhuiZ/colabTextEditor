@@ -8,14 +8,36 @@ h1 {
   text-align: center;
 }
 
+.WRAPPER {
+  text-align: center
+}
+
+.navigation {
+  white-space: nowrap;
+  display: inline-flex;
+}
+
+.back-docportal {
+  justify-content: flex-start;
+}
+
+.save {
+  justify-content: flex-end;
+}
+
 .toolbar {
   clear: both;
-  /*border-bottom: 2px solid rgba(72, 133, 237, 1);*/
   padding: 10px;
+  white-space: nowrap;
 }
 
 .toolbar > * {
   margin-bottom: 5px;
+}
+
+.toolbar-item {
+  display: inline-block;
+  margin: 3px;
 }
 
 .center-align {
@@ -38,7 +60,7 @@ h1 {
   margin-bottom: 5px;
 }
 
-.navigation {
+.registration{
   padding: 10px;
   margin: 10px;
 }
@@ -48,12 +70,11 @@ h1 {
 }
 
 .container {
-  /*border: 1px solid rgba(72, 133, 237, 0.8);
+  border: 2px solid rgba(72, 133, 237, 0.8);
   padding: 10px;
-  margin: 10px;
-  border-radius: 5px;*/
-  border-top: 2px solid rgba(72, 133, 237, 1);
-  border-bottom: 2px solid rgba(72, 133, 237, 1);
+  border-radius: 5px;
+  height: 500px;
+  margin-top: 15px;
 }
 
 .login-box {
