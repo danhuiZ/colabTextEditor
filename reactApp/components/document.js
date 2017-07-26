@@ -250,9 +250,6 @@ class Document extends React.Component {
     this.props.history.push('/doc-portal');
   }
 
-
-
-
   render() {
 
     const actions = [
