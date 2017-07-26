@@ -20,18 +20,10 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
 class Document extends React.Component {
   constructor(props) {
     super(props);
-<<<<<<< HEAD
     this.state = {
       editorState: EditorState.createEmpty(),
       inlineStyles: {}
     };
-=======
-
-    this.state = {
-      editorState: EditorState.createEmpty(),
-      alignment: ''};
-
->>>>>>> 5363a3987b773db510ab1ea0db0f3d933e95cd4d
     this.onChange = (editorState) => {
       this.setState({editorState});
     };
@@ -74,8 +66,8 @@ class Document extends React.Component {
       <RaisedButton
         backgroundColor={
           this.state.editorState.getCurrentInlineStyle().has(style) ?
-          colors.red800 :
-          colors.red200
+          colors.blue800 :
+          colors.blue200
         }
         onMouseDown={(e) => this.toggleFormat(e, style, block)}
         icon={<FontIcon className='material-icons'>{icon}</FontIcon>}
@@ -98,7 +90,7 @@ class Document extends React.Component {
     return (
       <div style={{display: 'inline-block'}}>
         <RaisedButton
-          backgroundColor={colors.red200}
+          backgroundColor={colors.blue200}
           icon={<FontIcon className='material-icons'>format_color_fill</FontIcon>}
           onClick={this.openColorPicker.bind(this)}
         />
