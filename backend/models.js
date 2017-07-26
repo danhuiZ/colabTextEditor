@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
-  name: String,
+  username: String,
+  password: String,
   documents: Array    //array of document ids that user has access to. Own or collab, ref to document
 });
 
@@ -9,7 +10,8 @@ var documentSchema = mongoose.Schema({
   title: String,
   ownerIDs: Array,
   collaboratorIDs: Array,
-  hashedpassword: String
+  hashedpassword: String,
+  editorState: Object
 });
 
 

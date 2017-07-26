@@ -9,12 +9,12 @@ h1 {
 }
 
 .toolbar {
-  border-bottom: 2px solid gray;
+  clear: both;
+  /*border-bottom: 2px solid rgba(72, 133, 237, 1);*/
   padding: 10px;
 }
 
 .toolbar > * {
-  margin-right: 5px;
   margin-bottom: 5px;
 }
 
@@ -31,15 +31,30 @@ h1 {
 }
 
 .button {
+  float: right;
   background-color: rgba(72, 133, 237, 0.8);
   margin-left: 10px;
   margin-right: 5px;
   margin-bottom: 5px;
 }
 
+.navigation {
+  padding: 10px;
+  margin: 10px;
+}
+
 .docID {
-  float: right;
-  font-weight: bold;
-  margin-top: 10px;
   margin-right: 10px;
+}
+
+.container {
+  border: 1px solid rgba(72, 133, 237, 0.8);
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.login-box {
+  margin-top: 50px;
+  height: 100%;
 }

@@ -5,6 +5,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var session = require('express-session');
 
+
 const app = express();
 mongoose.connect(process.env.MONGODB_URI, function(err) {
   if(err) {
@@ -89,25 +90,26 @@ app.post('/newdoc', function(req, res) {
   console.log("USER LOGGED IN ", req.user);
 
   // User.findOne({username: })
-    var newDoc = new Document({
-      title: req.body.title,
-      ownerIDs: [req.user._id],
-      collaboratorIDs: [req.user._id],
-      hashedpassword: req.body.password
-    })
+  var newDoc = new Document({
+    title: req.body.title,
+    ownerIDs: [req.user._id],
+    collaboratorIDs: [req.user._id],
+    hashedpassword: req.body.password,
+    editorState: null
+  });
 
-    newDoc.save(function(err, doc) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log('SAVED NEW DOC', doc);
-      res.json({
-        success: true,
-        document: doc
-      });
+  newDoc.save(function(err, doc) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log('SAVED NEW DOC', doc);
+    res.json({
+      success: true,
+      document: doc
     });
-})
+  });
+});
 
 app.get('/getdocs', function(req, res) {
 
@@ -118,7 +120,7 @@ app.get('/getdocs', function(req, res) {
     if(err){
       res.json({
         success: false
-      })
+      });
     }
 
     for(var i = 0; i < documents.length; i++){
@@ -130,11 +132,40 @@ app.get('/getdocs', function(req, res) {
     res.json({
       success: true,
       found_docs: found_docs
-    })
+    });
+  });
+});
 
-  })
+app.post('/retrieval', function(req, res) {
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('There was an error :(', err);
+    } else {
+      console.log('we are finding by this ID', req.body.docID);
+      console.log('this is the document', document);
+      res.json(document);
+    }
+  });
+});
 
-})
+app.post('/save', function(req, res) {
+  console.log(typeof req.body.editorState);
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('There was an error :(', err);
+    }
+    if(document) {
+      document.editorState = req.body.editorState;
+      document.save(function(err) {
+        if(err) {
+          console.log('There was an err :(', err);
+        } else {
+          res.send(200);
+        }
+      });
+    }
+  });
+});
 
 // need to fix this
 app.get('/logout', function(req, res) {
