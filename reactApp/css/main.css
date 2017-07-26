@@ -48,10 +48,12 @@ h1 {
 }
 
 .container {
-  border: 1px solid rgba(72, 133, 237, 0.8);
+  /*border: 1px solid rgba(72, 133, 237, 0.8);
   padding: 10px;
   margin: 10px;
-  border-radius: 5px;
+  border-radius: 5px;*/
+  border-top: 2px solid rgba(72, 133, 237, 1);
+  border-bottom: 2px solid rgba(72, 133, 237, 1);
 }
 
 .login-box {

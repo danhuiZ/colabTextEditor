@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 // or change it to axios request
 
@@ -41,13 +42,45 @@ class Registration extends React.Component {
 
   render() {
     return(
-      <div>
-      <h1>Register!</h1>
-        <input name="username" placeholder="Enter a username..." value={this.state.username} onChange={(e) => this.handleUser(e)} id="username"></input>
-        <br></br>
-        <input name="password" placeholder="Enter a password..." value={this.state.password} onChange={(e) => this.handlePass(e)} id="password"></input>
-        <br></br>
-        <button onClick={() => this.handleSubmit()}>Submit</button>
+      <div className="valign-wrapper row login-box">
+        <div className="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+          <form>
+            <div className="card-content">
+              <span className="card-title">Register with us</span>
+              <div className="row">
+                <div className="input-field col s12">
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    className="validate"
+                    name="username"
+                    value={this.state.username}
+                    onChange={(e) => this.handleUser(e)}
+                    id="username" />
+                </div>
+                <div className="input-field col s12">
+                  {/* <label for="password">Password </label> */}
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="validate"
+                    name="password"
+                    value={this.state.password}
+                    onChange={(e) => this.handlePass(e)}
+                    id="password" />
+                </div>
+              </div>
+            </div>
+            <div className="card-action right-align">
+              <a><Link to='/'>To Login</Link></a>
+              <input
+                type="submit"
+                className="btn green waves-effect waves-light"
+                onClick={() => this.handleSubmit()}
+                value="Register Now" />
+            </div>
+          </form>
+        </div>
       </div>
     );
   }

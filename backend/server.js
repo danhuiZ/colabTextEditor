@@ -121,6 +121,7 @@ app.get('/getdocs', function(req, res) {
       res.json({
         success: false
       });
+      return;
     }
 
     for(var i = 0; i < documents.length; i++){
@@ -162,6 +163,57 @@ app.post('/save', function(req, res) {
         } else {
           res.send(200);
         }
+      });
+    }
+  });
+});
+
+
+app.post('/search-shared', function(req, res) {
+  var user_id = req.user._id;
+
+  // searches for a document with the docid provided by the user in docportal search
+  Document.findById(req.body.docID, function(err, doc) {
+    if(err) {
+      console.log("There was an error :)", err);
+      res.json({
+        success: false,
+        message: 'Error accessing mongoose'
+      });
+      return;
+    }
+
+    if(doc){
+      if(doc.hashedpassword !== req.body.password){
+        // if found but password is wrong. tell them incorrect password
+        res.json({
+          success: false,
+          message: 'Incorrect password'
+        });
+      }else{
+        // if found with correct password. add them as a collab by adding their id. and tell them success
+        if(doc.collaboratorIDs.indexOf(req.user._id) === -1){
+          doc.collaboratorIDs.push(req.user._id);
+        }
+        doc.save( function(err, d) {
+          if(err) {
+            res.json({
+              success: false,
+              message: "Error updating collaborator ids"
+            });
+          }else{
+            res.json({
+              success: true,
+              message: "Collaborato ids updated"
+            });
+          }
+        });
+      }
+    }else{
+      // if not found. tell them document doesn't exist
+      res.json({
+        success: false,
+        message: 'Document does not exist with that id'
       });
     }
   });

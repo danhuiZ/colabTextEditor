@@ -8,15 +8,12 @@ injectTapEventPlugin();
 
 require('./css/main.css');
 
-console.log('yayayay :) ');
-
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
 // .then(resp => resp.text())
 // .then(text => console.log(text))
 // .catch(err => {throw err})
-require('./css/main.css');
-require('./css/Draft.css');
+
 
 render(
   <MuiThemeProvider><HashRouter><Routes /></HashRouter></MuiThemeProvider>,

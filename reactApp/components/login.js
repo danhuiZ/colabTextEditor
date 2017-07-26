@@ -57,7 +57,7 @@ class Login extends React.Component {
                 <div className="input-field col s12">
                   {/* <label for="username">Username</label> */}
                   <input
-                    type="email"
+                    type="text"
                     placeholder="Username"
                     className="validate"
                     name="username"
@@ -79,7 +79,7 @@ class Login extends React.Component {
               </div>
             </div>
             <div className="card-action right-align">
-              <a><Link to='/registration'>Registration</Link></a>
+              <a><Link to='/registration'>To Registration</Link></a>
               <input
                 type="submit"
                 className="btn green waves-effect waves-light"

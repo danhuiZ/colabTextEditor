@@ -6,7 +6,7 @@ import { Editor,
   convertToRaw,
   convertFromRaw
  } from 'draft-js';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import axios from 'axios';
 import FlatButton from 'material-ui/FlatButton';
@@ -226,12 +226,13 @@ class Document extends React.Component {
           {/* <button><Link to='/login'>This is the login</Link></button>
           <button><Link to='/registration'>This is the registration</Link></button>
           <button><Link to='/doc-portal'>Back to Documents Portal</Link></button> */}
-          <FlatButton
-            className="button"
-            label="Back to Documents Portal"
-            icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
-            href="/doc-portal"
-          />
+          <Link to='/doc-portal'>
+            <FlatButton
+              className="button"
+              label="Back to Documents Portal"
+              icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
+            />
+          </Link>
           <FlatButton
             className="button"
             label="Save Changes"
@@ -265,18 +266,19 @@ class Document extends React.Component {
           />
       </div>
       <div className="navigation">
-        <FlatButton
-          className="button"
-          label="To Login"
-          icon={<FontIcon className='material-icons'>face</FontIcon>}
-          href="/login"
-        />
-        <FlatButton
-          className="button"
-          label="To Registration"
-          icon={<FontIcon className='material-icons'>account_circle</FontIcon>}
-          href="/registration"
-        />
+        <Link to='/'>
+          <FlatButton
+            className="button"
+            label="To Login"
+            icon={<FontIcon className='material-icons'>face</FontIcon>}
+          />
+        </Link>
+        <Link to='/registration'>
+          <FlatButton
+            className="button"
+            label="To Registration"
+            icon={<FontIcon className='material-icons'>account_circle</FontIcon>}/>
+        </Link>
       </div>
     </div>
     );
