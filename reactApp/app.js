@@ -6,8 +6,10 @@ import { HashRouter } from 'react-router-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+// require('jquery');
+// require('materialize-css');
 require('./css/main.css');
-
+//require('./img');
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
 // .then(resp => resp.text())

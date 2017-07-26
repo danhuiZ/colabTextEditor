@@ -14,6 +14,8 @@ import FontIcon from 'material-ui/FontIcon';
 import Popover from 'material-ui/Popover';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
+import Toggle from 'material-ui/Toggle';
+
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
   center: {
@@ -33,6 +35,8 @@ class Document extends React.Component {
       editorState: EditorState.createEmpty(),
       inlineStyles: {},
       fontSize: 12,
+      openColorPicker: false,
+      openHighlighter: false
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
@@ -46,9 +50,25 @@ class Document extends React.Component {
     })
     .then(function({ data }) {
       if(data.editorState) {
+        var content = JSON.parse(data.editorState);
+        var newInlineStyles = Object.assign({}, self.state.inlineStyles);
+        content.blocks.forEach(function(block) {
+          block.inlineStyleRanges.forEach(function(i) {
+            if (i.style.startsWith('#')) {
+              newInlineStyles[i.style] = {
+                color: i.style
+              };
+            } else if (i.style.startsWith('highlight')) {
+              newInlineStyles[i.style] = {
+                backgroundColor: i.style.substring(9, 17)
+              };
+            }
+          });
+        });
         self.setState({
-          editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState))),
-          title: data.title
+          editorState: EditorState.createWithContent(convertFromRaw(content)),
+          title: data.title,
+          inlineStyles: newInlineStyles
         });
       } else {
         self.setState({
@@ -67,7 +87,8 @@ class Document extends React.Component {
     );
     this.setState({
       inlineStyles: newInlineStyles,
-      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex)
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex),
+      openColorPicker: false
     });
   }
 
@@ -79,7 +100,8 @@ class Document extends React.Component {
     );
     this.setState({
       inlineStyles: newInlineStyles,
-      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String('highlight' + color.hex))
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String('highlight' + color.hex)),
+      openHighlighter: false
     });
     console.log("INLINESTYLES", this.state.inlineStyles);
   }
@@ -115,6 +137,12 @@ class Document extends React.Component {
         icon={<FontIcon className='material-icons'>{icon}</FontIcon>}
       />
     );
+  }
+
+  handleChangeComplete() {
+    this.setState({
+      openColorPicker: false
+    });
   }
 
   openColorPicker(e) {
@@ -219,11 +247,18 @@ class Document extends React.Component {
   }
 
   render() {
+    console.log('INLINE STYLES', this.state.inlineStyles);
     return (
     <div>
         <h1>{this.state.title}</h1>
         <div className="navigation">
           <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
+          <br></br>
+          <Toggle
+            label="Enable Auto-saving"
+            labelPosition="right"
+            style={{"margin-top": "10px"}}
+           />
           <Link to='/doc-portal'>
             <FlatButton
               className="button"

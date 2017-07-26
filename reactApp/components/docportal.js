@@ -2,6 +2,15 @@ import React from 'react';
 import smalltalk from 'smalltalk/legacy';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import * as colors from 'material-ui/styles/colors';
+import { List, ListItem } from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import Avatar from 'material-ui/Avatar';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
 
 
 export default class DocPortal extends React.Component {
@@ -69,12 +78,12 @@ export default class DocPortal extends React.Component {
       .then( function({ data }) {
         // process response and either stay on doc portal with the proper alert or redirect to populated document page
         if(data.success === true){
-            self.props.history.push(`/documents/${sharedDocID}`);
+          self.props.history.push(`/documents/${sharedDocID}`);
         }
       });
 
       self.setState({
-          sharedDocID: ''
+        sharedDocID: ''
       });
     });
   }
@@ -96,23 +105,58 @@ export default class DocPortal extends React.Component {
   render() {
     return(
       <div className="docportal">
-        <div className = "new-doc">
-          <input type="text" value={this.state.docID} onChange={(event) => this.handleNewDocChange(event)} placeholder="New Document Title"/>
-          <button onClick={() => this.handleNewDocSubmit()}>Create Document</button>
-        </div>
-
         <div className = "my-docs">
-          <h4>My Documents</h4>
-          <ul>
+          {/* <h4>My Documents</h4> */}
+          <List>
+            <Subheader inset={true}>My Documents</Subheader>
             {this.state.myDocs.map( doc => {
-              return <li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>;
+              return (<ListItem
+                style={{"width": "40%"}}
+                leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={colors.blue500} />}
+                containerElement={<Link to={`/documents/${doc._id}`}></Link>}
+                primaryText={doc.title}
+                key={doc._id}
+              />);
             })}
-          </ul>
+          </List>
         </div>
-
+        <div className = "new-doc">
+          <TextField
+            floatingLabelText="New Document Title"
+            type="text"
+            style={{'boxShadow': 'none'}}
+            value={this.state.docID}
+            onChange={(event) => this.handleNewDocChange(event)}
+          />
+          <br></br>
+          <RaisedButton
+            label="Create Document"
+            onTouchTap={() => this.handleNewDocSubmit()}
+          />
+        </div>
         <div className = "shared-doc">
-          <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
-          <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button>
+          <TextField
+            floatingLabelText="paste a doc ID shared with you"
+            type="text"
+            value={this.state.sharedDocID}
+            onChange={(event) => this.handleSharedDocChange(event)}
+          />
+          <br></br>
+          <RaisedButton
+            label="Search for Shared Doc"
+            onTouchTap={() => this.handleSharedDocSubmit()}
+          />
+          {/* <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
+          <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button> */}
+        </div>
+        <div className="logout">
+          <Link to='/'>
+            <FlatButton
+              className="button"
+              label="Log out"
+              icon={<FontIcon className='material-icons'>account_circle</FontIcon>}
+            />
+          </Link>
         </div>
       </div>
     );
