@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 import Document from './components/document.js';
 import Login from './components/login.js';
 import Registration from './components/registration.js';

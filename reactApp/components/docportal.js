@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 import smalltalk from 'smalltalk/legacy';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -24,7 +24,7 @@ export default class DocPortal extends React.Component {
     //update with material modal
     var self = this;
     var title = this.state.docID;
-    var password = smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
+    smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
       //console.log('PASSWORD', password);
       axios.post('http://localhost:3000/newdoc', {
@@ -43,7 +43,6 @@ export default class DocPortal extends React.Component {
           console.log('failure making doc. redirect back to doc portal');
         }
       });
-
     });
     self.setState({
       docID: ''
@@ -59,9 +58,8 @@ export default class DocPortal extends React.Component {
   handleSharedDocSubmit() {
     var sharedDocID = this.state.sharedDocID;
     var self = this;
-
     // ask for password
-    var password = smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
+    smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
     .then( function(password) {
       // post to route in Backend
       axios.post('http://localhost:3000/search-shared', {
@@ -79,7 +77,6 @@ export default class DocPortal extends React.Component {
           sharedDocID: ''
       });
     });
-
   }
 
   componentWillMount() {

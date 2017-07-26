@@ -47,15 +47,47 @@ class Login extends React.Component {
 
   render() {
     return(
-      <div>
-        <h1>Login!</h1>
-        <p style={{color: 'red'}}>{this.state.status}</p>
-        <input name="username" placeholder="Enter a username..." value={this.state.username} onChange={(e) => this.handleUser(e)} id="username"></input>
-        <br></br>
-        <input name="password" placeholder="Enter a password..." value={this.state.password} onChange={(e) => this.handlePass(e)} id="password"></input>
-        <br></br>
-        <button onClick={() => this.handleSubmit()}>Submit</button>
-        <button><Link to='/registration'>This is the registration</Link></button>
+      <div className="valign-wrapper row login-box">
+        <div className="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+          <form>
+            <div className="card-content">
+              <span className="card-title">Log in with DAM docs, damn</span>
+              <div className="row">
+                <p style={{color: 'red'}}>{this.state.status}</p>
+                <div className="input-field col s12">
+                  {/* <label for="username">Username</label> */}
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    className="validate"
+                    name="username"
+                    value={this.state.username}
+                    onChange={(e) => this.handleUser(e)}
+                    id="username" />
+                </div>
+                <div className="input-field col s12">
+                  {/* <label for="password">Password </label> */}
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="validate"
+                    name="password"
+                    value={this.state.password}
+                    onChange={(e) => this.handlePass(e)}
+                    id="password" />
+                </div>
+              </div>
+            </div>
+            <div className="card-action right-align">
+              <a><Link to='/registration'>To Registration</Link></a>
+              <input
+                type="submit"
+                className="btn green waves-effect waves-light"
+                onClick={() => this.handleSubmit()}
+                value="Login" />
+            </div>
+          </form>
+        </div>
       </div>
     );
   }

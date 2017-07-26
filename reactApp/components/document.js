@@ -1,31 +1,46 @@
-var React = require('react');
-import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
+import React from 'react';
+import { Editor,
+  EditorState,
+  RichUtils,
+  DefaultDraftBlockRenderMap,
+  convertToRaw,
+  convertFromRaw
+ } from 'draft-js';
 import { Link } from 'react-router-dom';
+import * as colors from 'material-ui/styles/colors';
 import axios from 'axios';
+import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
+import Popover from 'material-ui/Popover';
+import { TwitterPicker } from 'react-color';
+import { Map } from 'immutable';
 
-export default class Document extends React.Component {
+const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
+  center: {
+    wrapper: <div className="center-align" />
+  },
+  right: {
+    wrapper: <div className="right-align" />
+  }
+}));
+
+class Document extends React.Component {
+
   constructor(props) {
     super(props);
-
     this.state = {
+      title: '',
       editorState: EditorState.createEmpty(),
-      alignment: '',
-      title: ''
+      inlineStyles: {},
+      fontSize: 12,
     };
-
     this.onChange = (editorState) => {
       this.setState({editorState});
-    };
-
-    this.styleMap = {
-      'COLOR': {color: 'red'},
-      'FONT': {fontSize: 30}
     };
   }
 
   componentWillMount() {
     var self = this;
-
     axios.post('http://localhost:3000/retrieval', {
       docID: self.props.match.params.docID
     })
@@ -34,136 +49,238 @@ export default class Document extends React.Component {
         self.setState({
           editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState))),
           title: data.title
-        })
+        });
       } else {
         self.setState({
           title: data.title
-        })
+        });
       }
-    })
+    });
   }
 
-  _onBoldClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'BOLD'
-    ));
+  formatColor(color) {
+    console.log('COLOR IS', color);
+    var newInlineStyles = Object.assign({}, this.state.inlineStyles,
+      {[color.hex]: {
+        color: color.hex,
+      }}
+    );
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex)
+    });
   }
 
-  _onItalicClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'ITALIC'
-    ));
+  highlightText(color) {
+    var newInlineStyles = Object.assign({}, this.state.inlineStyles,
+      {['highlight' + color.hex]: {
+        backgroundColor: color.hex,
+      }}
+    );
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String('highlight' + color.hex))
+    });
+    console.log("INLINESTYLES", this.state.inlineStyles);
   }
 
-  _onUnderlineClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'UNDERLINE'
-    ));
+  toggleFormat(e, style, block) {
+    e.preventDefault();      //prevent the editor from losing focus, can also use ref
+    console.log("STYLE", style);
+    if(block) {
+      console.log("REACHED here");
+      this.setState({
+        editorState: RichUtils.toggleBlockType(
+          this.state.editorState, style
+        )
+      });
+    } else {
+      this.setState({
+        editorState: RichUtils.toggleInlineStyle(
+          this.state.editorState, style
+        )
+      });
+    }
   }
 
-  _onCodeClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'CODE'
-    ));
+  formatButton({icon, style, block}) {
+    return (
+      <FlatButton
+        backgroundColor={
+          this.state.editorState.getCurrentInlineStyle().has(style) ?
+          colors.blue800 :
+          colors.blue200
+        }
+        onMouseDown={(e) => this.toggleFormat(e, style, block)}
+        icon={<FontIcon className='material-icons'>{icon}</FontIcon>}
+      />
+    );
   }
 
-
-  _onBulletedClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      'unordered-list-item'
-    ));
+  openColorPicker(e) {
+    this.setState({
+      openColorPicker: true,
+      colorPickerButton: e.target
+    });
+  }
+  closeColorPicker() {
+    this.setState({
+      openColorPicker: false,
+    });
+  }
+  colorPicker() {
+    return (
+      <div style={{display: 'inline-block'}}>
+        <FlatButton
+          backgroundColor={colors.blue200}
+          icon={<FontIcon className='material-icons'>format_color_fill</FontIcon>}
+          onClick={this.openColorPicker.bind(this)}
+        />
+        <Popover
+          open={this.state.openColorPicker}
+          anchorEl={this.state.colorPickerButton}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.closeColorPicker.bind(this)}
+        >
+          <TwitterPicker onChangeComplete={this.formatColor.bind(this)}/>
+        </Popover>
+      </div>
+    );
   }
 
-  _onNumberedClick() {
-    this.onChange(RichUtils.toggleBlockType(
-      this.state.editorState,
-      'ordered-list-item'
-    ));
+  openHighlighter(e) {
+    this.setState({
+      openHighlighter: true,
+      highlighterButton: e.target
+    });
+  }
+  closeHighlighter() {
+    this.setState({
+      openHighlighter: false,
+    });
+  }
+  highlighter() {
+    return (
+      <div style={{display: 'inline-block'}}>
+        <FlatButton
+          backgroundColor={colors.blue200}
+          icon={<FontIcon className='material-icons'>highlight</FontIcon>}
+          onClick={this.openHighlighter.bind(this)}
+        />
+        <Popover
+          open={this.state.openHighlighter}
+          anchorEl={this.state.highlighterButton}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.closeHighlighter.bind(this)}
+        >
+          <TwitterPicker onChangeComplete={this.highlightText.bind(this)}/>
+        </Popover>
+      </div>
+    );
   }
 
-  onColorClick(){
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'COLOR'
-    ));
+  applyIncreaseFontSize(shrink) {
+    var newFontSize = this.state.fontSize + (shrink ? -4 : 4);
+    var newInlineStyles = Object.assign({}, this.state.inlineStyles,
+      {[newFontSize]: {
+        fontSize: `${newFontSize}px`
+      }}
+    );
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String(newFontSize)),
+      fontSize: newFontSize
+    });
   }
 
-  onFontClick(){
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'FONT'
-    ));
+  increaseFontSize(shrink) {
+    return (
+      <FlatButton
+        backgroundColor={colors.blue200}
+        onMouseDown={() => this.applyIncreaseFontSize(shrink)}
+        icon={<FontIcon className='material-icons'>{shrink ? 'zoom_out' : 'zoom_in'}</FontIcon>}
+      />
+    );
   }
-
-  _onLeftIndentClick() {
-    this.setState({alignment: 'left'});
-  }
-
-  _onCenterIndentClick() {
-    this.setState({alignment: 'center'});
-
-  }
-
-  _onRightIndentClick() {
-    this.setState({alignment: 'right'});
-  }
-
-
 
   _onSaveClick() {
     axios.post('http://localhost:3000/save', {
       docID: this.props.match.params.docID,
       editorState: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
     })
-    .then(function(resp) {
-      console.log('Document successfully saved!');
-    })
-    .catch(function(err) {
-      console.log('There was an error', err);
-    })
+     .then(function(resp) {
+       console.log('Document successfully saved!');
+     })
+     .catch(function(err) {
+       console.log('There was an error', err);
+     });
   }
 
   render() {
     return (
     <div>
-       <div>
-        <div id="navigation">
-          <button><Link to='/login'>This is the login</Link></button>
-          <button><Link to='/registration'>This is the registration</Link></button>
-          <button><Link to='/doc-portal'>Back to Documents Portal</Link></button>
-          <h1>{this.state.title}</h1>
-          <h4>{`Document ID: ${this.props.match.params.docID}`}</h4>
-          <button onClick={() => this._onSaveClick()}>Save Changes</button>
-        </div>
-        <div id="content">
-          <button onClick={this._onLeftIndentClick.bind(this)}>Left</button>
-          <button onClick={this._onCenterIndentClick.bind(this)}>Center</button>
-          <button onClick={this._onRightIndentClick.bind(this)}>Right</button>
-          <button onClick={this._onBoldClick.bind(this)}>Bold</button>
-          <button onClick={this._onItalicClick.bind(this)}>Italic</button>
-          <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
-          <button onClick={this._onCodeClick.bind(this)}>Code</button>
-          <button onClick={this.onColorClick.bind(this)}>Font Color</button>
-          <button onClick={this.onFontClick.bind(this)}>Font Size</button>
-          <button onClick={this._onBulletedClick.bind(this)}>Bulleted List</button>
-          <button onClick={this._onNumberedClick.bind(this)}>Numbered List</button>
-          <div className="editor">
-            <Editor
-              customStyleMap={this.styleMap}
-              editorState={this.state.editorState}
-              onChange={this.onChange}
-              spellCheck={true}
-              textAlignment={this.state.alignment}
+        <h1>{this.state.title}</h1>
+        <div className="navigation">
+          <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
+          <Link to='/doc-portal'>
+            <FlatButton
+              className="button"
+              label="Back to Documents Portal"
+              icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
             />
-          </div>
+          </Link>
+          <FlatButton
+            className="button"
+            label="Save Changes"
+            icon={<FontIcon className='material-icons'>save</FontIcon>}
+            onTouchTap={this._onSaveClick.bind(this)}
+          />
         </div>
+        <div className="toolbar">
+          {this.colorPicker()}
+          {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
+          {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
+          {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
+          {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
+          {this.highlighter()}
+          {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
+          {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
+          {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
+          {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
+          {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
+          {this.increaseFontSize(false)}
+          {this.increaseFontSize(true)}
+        </div>
+        <div className="container">
+          <Editor
+            ref="editor"
+            blockRenderMap={myBlockTypes}
+            customStyleMap={this.state.inlineStyles}
+            editorState={this.state.editorState}
+            onChange={this.onChange}
+            spellCheck={true}
+          />
+      </div>
+      <div className="navigation">
+        <Link to='/'>
+          <FlatButton
+            className="button"
+            label="To Login"
+            icon={<FontIcon className='material-icons'>face</FontIcon>}
+          />
+        </Link>
+        <Link to='/registration'>
+          <FlatButton
+            className="button"
+            label="To Registration"
+            icon={<FontIcon className='material-icons'>account_circle</FontIcon>}/>
+        </Link>
       </div>
     </div>
     );
   }
 }
+
+export default Document;
