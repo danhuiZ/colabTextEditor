@@ -7,7 +7,6 @@ import TextField from 'material-ui/TextField';
 // require('../img');
 // or change it to axios request
 
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -16,8 +15,6 @@ class Login extends React.Component {
       password: '',
       status: ''
     };
-
-    console.log('happy man');
 
     this.handleUser = this.handleUser.bind(this);
     this.handlePass = this.handlePass.bind(this);
@@ -40,6 +37,7 @@ class Login extends React.Component {
       password: this.state.password
     })
     .then(function({ data }) {
+      console.log('This log should contain the data', data);
       if(data.success) {
         console.log('The user should be taken to documents page');
         self.props.history.push('/doc-portal');
@@ -128,6 +126,7 @@ class Login extends React.Component {
       //     </form>
       //   </div>
       // </div>
+
     );
   }
 

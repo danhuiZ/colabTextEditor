@@ -6,12 +6,12 @@ import { Editor,
   convertToRaw,
   convertFromRaw
  } from 'draft-js';
-import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import axios from 'axios';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import Popover from 'material-ui/Popover';
+import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
 import Toggle from 'material-ui/Toggle';
@@ -26,6 +26,7 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
   }
 }));
 
+
 class Document extends React.Component {
 
   constructor(props) {
@@ -36,7 +37,8 @@ class Document extends React.Component {
       inlineStyles: {},
       fontSize: 12,
       openColorPicker: false,
-      openHighlighter: false
+      openHighlighter: false,
+      open: false,
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
@@ -151,11 +153,13 @@ class Document extends React.Component {
       colorPickerButton: e.target
     });
   }
+
   closeColorPicker() {
     this.setState({
       openColorPicker: false,
     });
   }
+
   colorPicker() {
     return (
       <div style={{display: 'inline-block'}}>
@@ -183,11 +187,13 @@ class Document extends React.Component {
       highlighterButton: e.target
     });
   }
+
   closeHighlighter() {
     this.setState({
       openHighlighter: false,
     });
   }
+
   highlighter() {
     return (
       <div style={{display: 'inline-block'}}>
@@ -233,6 +239,21 @@ class Document extends React.Component {
     );
   }
 
+  saveReminder() {
+    var self = this;
+
+    axios.post('http://localhost:3000/retrieval', {
+      docID: self.props.match.params.docID
+    })
+    .then(function({ data }) {
+      if(JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
+        self.setState({open: true});
+      } else {
+        self.props.history.push('/doc-portal');
+      }
+    });
+  }
+
   _onSaveClick() {
     axios.post('http://localhost:3000/save', {
       docID: this.props.match.params.docID,
@@ -246,10 +267,33 @@ class Document extends React.Component {
      });
   }
 
+  _handleDiscard() {
+    this.setState({open: false});
+    this.props.history.push('/doc-portal');
+  }
+
+  _handleSave() {
+    this.setState({open: false});
+    this._onSaveClick();
+    this.props.history.push('/doc-portal');
+  }
+
   render() {
     console.log('INLINE STYLES', this.state.inlineStyles);
+    const actions = [
+      <FlatButton
+        label="Discard Changes"
+        primary={true}
+        onTouchTap={() => this._handleDiscard()}
+      />,
+      <FlatButton
+        label="Save"
+        primary={true}
+        onTouchTap={() => this._handleSave()}
+      />,
+    ];
     return (
-    <div>
+      <div>
         <h1>{this.state.title}</h1>
         <div className="navigation">
           <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
@@ -270,7 +314,13 @@ class Document extends React.Component {
             className="button"
             label="Save Changes"
             icon={<FontIcon className='material-icons'>save</FontIcon>}
-            onTouchTap={this._onSaveClick.bind(this)}
+            onTouchTap={this.saveReminder.bind(this)}
+          />
+          <Dialog
+            title="Do you want save?"
+            actions={actions}
+            modal={true}
+            open={this.state.open}
           />
         </div>
         <div className="toolbar">
@@ -297,21 +347,6 @@ class Document extends React.Component {
             onChange={this.onChange}
             spellCheck={true}
           />
-      </div>
-      <div className="navigation">
-        <Link to='/'>
-          <FlatButton
-            className="button"
-            label="To Login"
-            icon={<FontIcon className='material-icons'>face</FontIcon>}
-          />
-        </Link>
-        <Link to='/registration'>
-          <FlatButton
-            className="button"
-            label="To Registration"
-            icon={<FontIcon className='material-icons'>account_circle</FontIcon>}/>
-        </Link>
       </div>
     </div>
     );

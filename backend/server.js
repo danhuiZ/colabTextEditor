@@ -169,6 +169,16 @@ app.post('/save', function(req, res) {
 
 app.post('/search-shared', function(req, res) {
   // searches for a document with the docid provided by the user in docportal search
+  console.log('HERE FOR NOW ', typeof req.body.docID);
+
+  if(req.body.docID.length !== 24){
+    res.json({
+      success: false,
+      message: 'Invalid DocID'
+    });
+    return;
+  }
+
   Document.findById(req.body.docID, function(err, doc) {
     if(err) {
       console.log("There was an error :)", err);
@@ -247,8 +257,6 @@ app.post('/save', function(req, res) {
 });
 
 app.post('/search-shared', function(req, res) {
-  var user_id = req.user._id;
-
   // searches for a document with the docid provided by the user in docportal search
   Document.findById(req.body.docID, function(err, doc) {
     if(err) {
@@ -270,7 +278,7 @@ app.post('/search-shared', function(req, res) {
       } else {
         // if found with correct password. add them as a collab by adding their id. and tell them success
         if(doc.collaboratorIDs.indexOf(req.user._id) === -1){
-            doc.collaboratorIDs.push(req.user._id);
+          doc.collaboratorIDs.push(req.user._id);
         }
         doc.save( function(err, d) {
           if(err) {
@@ -288,10 +296,10 @@ app.post('/search-shared', function(req, res) {
       }
     } else{
         // if not found. tell them document doesn't exist
-        res.json({
-          success: false,
-          message: 'Document does not exist with that id'
-        });
+      res.json({
+        success: false,
+        message: 'Document does not exist with that id'
+      });
     }
   });
 });
