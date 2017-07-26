@@ -23,9 +23,8 @@ export default class DocPortal extends React.Component {
   handleNewDocSubmit() {
     //update with material modal
     var self = this;
-
     var title = this.state.docID
-    var password = smalltalk.prompt("Create Document", "Please enter a password for " + this.state.docID + ': ')
+    var password = smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
       //console.log('PASSWORD', password);
       axios.post('http://localhost:3000/newdoc', {
@@ -58,11 +57,29 @@ export default class DocPortal extends React.Component {
   }
 
   handleSharedDocSubmit() {
-    event.preventDefault();
-    alert('Searching for this shared document and then ask for password to access: ' + this.state.sharedDocID);
-    this.setState({
-        sharedDocID: ''
+    var sharedDocID = this.state.sharedDocID;
+    var self = this;
+
+    // ask for password
+    var password = smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
+    .then( function(password) {
+      // post to route in Backend
+      axios.post('http://localhost:3000/search-shared', {
+        docID: sharedDocID,
+        password: password
+      })
+      .then( function({ data }) {
+        // process response and either stay on doc portal with the proper alert or redirect to populated document page
+        if(data.success === true){
+            self.props.history.push(`/documents/${sharedDocID}`);
+        }
+      })
+
+      this.setState({
+          sharedDocID: ''
+      })
     })
+
   }
 
   componentWillMount() {
