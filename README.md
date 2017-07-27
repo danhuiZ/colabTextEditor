@@ -19,7 +19,7 @@ The application is a native-desktop real-time text editor. It allows you to crea
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License
 
 ## Acknowledgments
 
