@@ -25,7 +25,7 @@ var { User, Document } = require('./models.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(sockets(io)); // this needs to work
+// app.use(sockets(io)); // this needs to work
 
 // PASSPORT FLOW
 
