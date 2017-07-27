@@ -11,7 +11,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-var sockets = require('./sockets.js');
+require('./sockets.js')(app, io);
 
 mongoose.connect(process.env.MONGODB_URI, function(err) {
   if(err) {
@@ -25,7 +25,6 @@ var { User, Document } = require('./models.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(sockets(io)); // this needs to work
 
 // PASSPORT FLOW
 
