@@ -8,6 +8,9 @@ import Popover from 'material-ui/Popover';
 import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
+import Toggle from 'material-ui/Toggle';
+// import { Link } from 'react-router-dom';
+
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
   center: {
@@ -28,6 +31,8 @@ class Document extends React.Component {
       editorState: EditorState.createEmpty(),
       inlineStyles: {},
       fontSize: 12,
+      openColorPicker: false,
+      openHighlighter: false,
       open: false,
     };
     this.onChange = (editorState) => {
@@ -42,9 +47,25 @@ class Document extends React.Component {
     })
     .then(function({ data }) {
       if(data.editorState) {
+        var content = JSON.parse(data.editorState);
+        var newInlineStyles = Object.assign({}, self.state.inlineStyles);
+        content.blocks.forEach(function(block) {
+          block.inlineStyleRanges.forEach(function(i) {
+            if (i.style.startsWith('#')) {
+              newInlineStyles[i.style] = {
+                color: i.style
+              };
+            } else if (i.style.startsWith('highlight')) {
+              newInlineStyles[i.style] = {
+                backgroundColor: i.style.substring(9, 17)
+              };
+            }
+          });
+        });
         self.setState({
-          editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState))),
-          title: data.title
+          editorState: EditorState.createWithContent(convertFromRaw(content)),
+          title: data.title,
+          inlineStyles: newInlineStyles
         });
       } else {
         self.setState({
@@ -63,7 +84,8 @@ class Document extends React.Component {
     );
     this.setState({
       inlineStyles: newInlineStyles,
-      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex)
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex),
+      openColorPicker: false
     });
   }
 
@@ -75,7 +97,8 @@ class Document extends React.Component {
     );
     this.setState({
       inlineStyles: newInlineStyles,
-      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String('highlight' + color.hex))
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String('highlight' + color.hex)),
+      openHighlighter: false
     });
     console.log("INLINESTYLES", this.state.inlineStyles);
   }
@@ -111,6 +134,12 @@ class Document extends React.Component {
         icon={<FontIcon className='material-icons'>{icon}</FontIcon>}
       />
     );
+  }
+
+  handleChangeComplete() {
+    this.setState({
+      openColorPicker: false
+    });
   }
 
   openColorPicker(e) {
@@ -212,9 +241,10 @@ class Document extends React.Component {
       docID: self.props.match.params.docID
     })
     .then(function({ data }) {
-      if(JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
+      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
         self.setState({open: true});
       } else {
+        console.log('what the god');
         self.props.history.push('/doc-portal');
       }
     });
@@ -245,7 +275,7 @@ class Document extends React.Component {
   }
 
   render() {
-
+    console.log('INLINE STYLES', this.state.inlineStyles);
     const actions = [
       <FlatButton
         label="Discard Changes"
@@ -258,23 +288,28 @@ class Document extends React.Component {
         onTouchTap={() => this._handleSave()}
       />,
     ];
-
     return (
       <div>
         <h1>{this.state.title}</h1>
         <div className="navigation">
           <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
+          <br></br>
+          <Toggle
+            label="Enable Auto-saving"
+            labelPosition="right"
+            style={{"margin-top": "10px"}}
+           />
+          <FlatButton
+            className="button"
+            label="Back to Documents Portal"
+            icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
+            onTouchTap={() => this.saveReminder()}
+          />
           <FlatButton
             className="button"
             label="Save Changes"
             icon={<FontIcon className='material-icons'>save</FontIcon>}
-            onTouchTap={this._onSaveClick.bind(this)}
-          />
-          <FlatButton
-              className="button"
-              label="Go back"
-              icon={<FontIcon className='material-icons'>save</FontIcon>}
-              onTouchTap={() => this.saveReminder()}
+            onTouchTap={() => this._onSaveClick()}
           />
           <Dialog
             title="Do you want save?"
