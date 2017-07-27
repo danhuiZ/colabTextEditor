@@ -15,9 +15,7 @@ mongoose.connect(process.env.MONGODB_URI, function(err) {
   }
 });
 
-var User = require('./models.js').User;
-var Document = require('./models.js').Document;
-
+var { User, Document } = require('./models.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -95,7 +93,7 @@ app.post('/newdoc', function(req, res) {
     ownerIDs: [req.user._id],
     collaboratorIDs: [req.user._id],
     hashedpassword: req.body.password,
-    editorState: null
+    editorState: req.body.editorState
   });
 
   newDoc.save(function(err, doc) {
@@ -170,8 +168,6 @@ app.post('/save', function(req, res) {
 
 
 app.post('/search-shared', function(req, res) {
-  var user_id = req.user._id;
-
   // searches for a document with the docid provided by the user in docportal search
   console.log('HERE FOR NOW ', typeof req.body.docID);
 
@@ -179,7 +175,7 @@ app.post('/search-shared', function(req, res) {
     res.json({
       success: false,
       message: 'Invalid DocID'
-    })
+    });
     return;
   }
 
@@ -261,8 +257,6 @@ app.post('/save', function(req, res) {
 });
 
 app.post('/search-shared', function(req, res) {
-  var user_id = req.user._id;
-
   // searches for a document with the docid provided by the user in docportal search
   Document.findById(req.body.docID, function(err, doc) {
     if(err) {
@@ -284,7 +278,7 @@ app.post('/search-shared', function(req, res) {
       } else {
         // if found with correct password. add them as a collab by adding their id. and tell them success
         if(doc.collaboratorIDs.indexOf(req.user._id) === -1){
-            doc.collaboratorIDs.push(req.user._id);
+          doc.collaboratorIDs.push(req.user._id);
         }
         doc.save( function(err, d) {
           if(err) {
@@ -302,10 +296,10 @@ app.post('/search-shared', function(req, res) {
       }
     } else{
         // if not found. tell them document doesn't exist
-        res.json({
-          success: false,
-          message: 'Document does not exist with that id'
-        });
+      res.json({
+        success: false,
+        message: 'Document does not exist with that id'
+      });
     }
   });
 });

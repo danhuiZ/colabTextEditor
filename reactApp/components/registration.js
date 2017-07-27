@@ -1,6 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 // or change it to axios request
 
@@ -42,46 +45,41 @@ class Registration extends React.Component {
 
   render() {
     return(
-      <div className="valign-wrapper row login-box">
-        <div className="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
-          <form>
-            <div className="card-content">
-              <span className="card-title">Register with us</span>
-              <div className="row">
-                <div className="input-field col s12">
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    className="validate"
-                    name="username"
-                    value={this.state.username}
-                    onChange={(e) => this.handleUser(e)}
-                    id="username" />
-                </div>
-                <div className="input-field col s12">
-                  {/* <label for="password">Password </label> */}
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    className="validate"
-                    name="password"
-                    value={this.state.password}
-                    onChange={(e) => this.handlePass(e)}
-                    id="password" />
-                </div>
-              </div>
-            </div>
-            <div className="card-action right-align">
-              <Link to='/'>To Login</Link>
-              <input
-                type="submit"
-                className="btn green waves-effect waves-light"
-                onClick={() => this.handleSubmit()}
-                value="Register Now" />
-            </div>
-          </form>
-        </div>
-      </div>
+      <Card className="card">
+          <CardMedia
+            // overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
+          >
+            {/* <img src="andrew.jpg" /> */}
+          </CardMedia>
+          <CardTitle title="Register with us" subtitle="the document management tool that you deserve" />
+          <CardText>
+            <TextField
+              floatingLabelText="Username"
+              type="text"
+              style={{'boxShadow': 'none'}}
+              value={this.state.username}
+              onChange={(event) => this.handleUser(event)}
+            />
+            <TextField
+              floatingLabelText="Password"
+              type="password"
+              style={{'boxShadow': 'none'}}
+              value={this.state.password}
+              onChange={(event) => this.handlePass(event)}
+            />
+          </CardText>
+          <CardActions>
+            <RaisedButton
+              label="To Login"
+              containerElement={<Link to='/'></Link>}
+            />
+            <RaisedButton
+              label="Register"
+              primary={true}
+              onTouchTap={() => this.handleSubmit()}
+            />
+          </CardActions>
+        </Card>
     );
   }
 
