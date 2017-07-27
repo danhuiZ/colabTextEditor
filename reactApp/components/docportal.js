@@ -37,7 +37,7 @@ export default class DocPortal extends React.Component {
     var title = this.state.docID;
     smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
-      //console.log('PASSWORD', password);
+ 
       axios.post('http://localhost:3000/newdoc', {
         title: title,
         password: password,

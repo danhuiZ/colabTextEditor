@@ -85,7 +85,6 @@ class Document extends React.Component {
     this.props.socket.emit('joinRoom', this.props.match.params.docID);
   }
 
-
   formatColor(color) {
     console.log('COLOR IS', color);
     var newInlineStyles = Object.assign({}, this.state.inlineStyles,
