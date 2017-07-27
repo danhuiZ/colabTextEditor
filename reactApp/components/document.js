@@ -295,24 +295,27 @@ class Document extends React.Component {
       />,
     ];
     return (
-      <div>
-        <h1>{this.state.title}</h1>
-        <div className="navigation">
+      <div className="WRAPPER">
+
+        <div className='title'>
+          <h1>{this.state.title}</h1>
           <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
-          <br></br>
-          <Toggle
+        </div>
+
+        <div className="navigation">
+          {/* <Toggle
             label="Enable Auto-saving"
             labelPosition="right"
             style={{"margin-top": "10px"}}
-           />
+           /> */}
           <FlatButton
-            className="button"
+            className="button back-docportal"
             label="Back to Documents Portal"
             icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
             onTouchTap={() => this.saveReminder()}
           />
           <FlatButton
-            className="button"
+            className="button save"
             label="Save Changes"
             icon={<FontIcon className='material-icons'>save</FontIcon>}
             onTouchTap={() => this._onSaveClick()}
@@ -324,21 +327,55 @@ class Document extends React.Component {
             open={this.state.open}
           />
         </div>
+
         <div className="toolbar">
-          {this.colorPicker()}
-          {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
-          {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
-          {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
-          {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
-          {this.highlighter()}
-          {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
-          {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
-          {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
-          {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
-          {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
-          {this.increaseFontSize(false)}
-          {this.increaseFontSize(true)}
+          <div clasName="toolbar1">
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
+            </div>
+          </div>
+          <div clasName="toolbar2">
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
+            </div>
+            <div className="toolbar-item">
+              {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
+            </div>
+          </div>
+          <div clasName="toolbar3">
+            <div className="toolbar-item">
+              {this.colorPicker()}
+            </div>
+            <div className="toolbar-item">
+              {this.increaseFontSize(true)}
+            </div>
+            <div className="toolbar-item">
+              {this.increaseFontSize(false)}
+            </div>
+            <div className="toolbar-item">
+              {this.highlighter()}
+            </div>
+          </div>
         </div>
+
         <div className="container">
           <Editor
             ref="editor"
@@ -348,7 +385,9 @@ class Document extends React.Component {
             onChange={this.onChange}
             spellCheck={true}
           />
-      </div>
+        </div>
+
+
     </div>
     );
   }
