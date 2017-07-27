@@ -83,8 +83,8 @@ class Document extends React.Component {
 
   componentDidMount() {
     this.props.socket.emit('joinRoom', this.props.match.params.docID);
-
   }
+
 
   formatColor(color) {
     console.log('COLOR IS', color);
@@ -252,7 +252,11 @@ class Document extends React.Component {
       docID: self.props.match.params.docID
     })
     .then(function({ data }) {
-      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
+
+      console.log('this is the data base stuff', JSON.stringify(convertFromRaw(JSON.parse(data.editorState)).blockMap));
+      console.log('this is the stuff on the document', JSON.stringify(self.state.editorState.getCurrentContent().blockMap));
+
+      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState)).blockMap) !== JSON.stringify(self.state.editorState.getCurrentContent().blockMap)) {
         self.setState({open: true});
       } else {
         console.log('what the god');
