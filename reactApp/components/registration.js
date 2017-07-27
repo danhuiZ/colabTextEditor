@@ -1,5 +1,9 @@
 import React from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 // or change it to axios request
 
@@ -41,14 +45,41 @@ class Registration extends React.Component {
 
   render() {
     return(
-      <div>
-      <h1>Register!</h1>
-        <input name="username" placeholder="Enter a username..." value={this.state.username} onChange={(e) => this.handleUser(e)} id="username"></input>
-        <br></br>
-        <input name="password" placeholder="Enter a password..." value={this.state.password} onChange={(e) => this.handlePass(e)} id="password"></input>
-        <br></br>
-        <button onClick={() => this.handleSubmit()}>Submit</button>
-      </div>
+      <Card className="card">
+          <CardMedia
+            // overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
+          >
+            {/* <img src="andrew.jpg" /> */}
+          </CardMedia>
+          <CardTitle title="Register with us" subtitle="the document management tool that you deserve" />
+          <CardText>
+            <TextField
+              floatingLabelText="Username"
+              type="text"
+              style={{'boxShadow': 'none'}}
+              value={this.state.username}
+              onChange={(event) => this.handleUser(event)}
+            />
+            <TextField
+              floatingLabelText="Password"
+              type="password"
+              style={{'boxShadow': 'none'}}
+              value={this.state.password}
+              onChange={(event) => this.handlePass(event)}
+            />
+          </CardText>
+          <CardActions>
+            <RaisedButton
+              label="To Login"
+              containerElement={<Link to='/'></Link>}
+            />
+            <RaisedButton
+              label="Register"
+              primary={true}
+              onTouchTap={() => this.handleSubmit()}
+            />
+          </CardActions>
+        </Card>
     );
   }
 

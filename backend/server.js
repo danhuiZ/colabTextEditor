@@ -1,11 +1,18 @@
-const express = require('express');
+var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var session = require('express-session');
 
-const app = express();
+var app = express();
+
+//io stuff
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+var sockets = require('./sockets.js');
+
 mongoose.connect(process.env.MONGODB_URI, function(err) {
   if(err) {
     console.log('Error');
@@ -14,12 +21,11 @@ mongoose.connect(process.env.MONGODB_URI, function(err) {
   }
 });
 
-var User = require('./models.js').User;
-var Document = require('./models.js').Document;
-
+var { User, Document } = require('./models.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(sockets(io)); // this needs to work
 
 // PASSPORT FLOW
 
@@ -89,25 +95,26 @@ app.post('/newdoc', function(req, res) {
   console.log("USER LOGGED IN ", req.user);
 
   // User.findOne({username: })
-    var newDoc = new Document({
-      title: req.body.title,
-      ownerIDs: [req.user._id],
-      collaboratorIDs: [req.user._id],
-      hashedpassword: req.body.password
-    })
+  var newDoc = new Document({
+    title: req.body.title,
+    ownerIDs: [req.user._id],
+    collaboratorIDs: [req.user._id],
+    hashedpassword: req.body.password,
+    editorState: req.body.editorState
+  });
 
-    newDoc.save(function(err, doc) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log('SAVED NEW DOC', doc);
-      res.json({
-        success: true,
-        document: doc
-      });
+  newDoc.save(function(err, doc) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log('SAVED NEW DOC', doc);
+    res.json({
+      success: true,
+      document: doc
     });
-})
+  });
+});
 
 app.get('/getdocs', function(req, res) {
 
@@ -118,7 +125,8 @@ app.get('/getdocs', function(req, res) {
     if(err){
       res.json({
         success: false
-      })
+      });
+      return;
     }
 
     for(var i = 0; i < documents.length; i++){
@@ -130,11 +138,179 @@ app.get('/getdocs', function(req, res) {
     res.json({
       success: true,
       found_docs: found_docs
-    })
+    });
+  });
+});
 
-  })
+app.post('/retrieval', function(req, res) {
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('There was an error :(', err);
+    } else {
+      console.log('we are finding by this ID', req.body.docID);
+      console.log('this is the document', document);
+      res.json(document);
+    }
+  });
+});
 
-})
+app.post('/save', function(req, res) {
+  console.log(typeof req.body.editorState);
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('There was an error :(', err);
+    }
+    if(document) {
+      document.editorState = req.body.editorState;
+      document.save(function(err) {
+        if(err) {
+          console.log('There was an err :(', err);
+        } else {
+          res.send(200);
+        }
+      });
+    }
+  });
+});
+
+
+app.post('/search-shared', function(req, res) {
+  // searches for a document with the docid provided by the user in docportal search
+  console.log('HERE FOR NOW ', typeof req.body.docID);
+
+  if(req.body.docID.length !== 24){
+    res.json({
+      success: false,
+      message: 'Invalid DocID'
+    });
+    return;
+  }
+
+  Document.findById(req.body.docID, function(err, doc) {
+    if(err) {
+      console.log("There was an error :)", err);
+      res.json({
+        success: false,
+        message: 'Error accessing mongoose'
+      });
+      return;
+    }
+
+    if(doc){
+      if(doc.hashedpassword !== req.body.password){
+        // if found but password is wrong. tell them incorrect password
+        res.json({
+          success: false,
+          message: 'Incorrect password'
+        });
+      }else{
+        // if found with correct password. add them as a collab by adding their id. and tell them success
+        if(doc.collaboratorIDs.indexOf(req.user._id) === -1){
+          doc.collaboratorIDs.push(req.user._id);
+        }
+        doc.save( function(err, d) {
+          if(err) {
+            res.json({
+              success: false,
+              message: "Error updating collaborator ids"
+            });
+          }else{
+            res.json({
+              success: true,
+              message: "Collaborato ids updated"
+            });
+          }
+        });
+      }
+    }else{
+      // if not found. tell them document doesn't exist
+      res.json({
+        success: false,
+        message: 'Document does not exist with that id'
+      });
+    }
+  });
+});
+
+app.post('/retrieval', function(req, res) {
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('There was an error :(', err);
+    } else {
+      console.log('we are finding by this ID', req.body.docID);
+      console.log('this is the document', document);
+      res.json(document);
+    }
+  });
+});
+
+app.post('/save', function(req, res) {
+  console.log(typeof req.body.editorState);
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('There was an error :(', err);
+    }
+    if(document) {
+      document.editorState = req.body.editorState;
+      document.save(function(err) {
+        if(err) {
+          console.log('There was an err :(', err);
+        } else {
+          res.send(200);
+        }
+      });
+    }
+  });
+});
+
+app.post('/search-shared', function(req, res) {
+  // searches for a document with the docid provided by the user in docportal search
+  Document.findById(req.body.docID, function(err, doc) {
+    if(err) {
+      console.log("There was an error :)", err);
+      res.json({
+        success: false,
+        message: 'Error accessing mongoose'
+      });
+      return;
+    }
+
+    if(doc){
+      if(doc.hashedpassword !== req.body.password){
+        // if found but password is wrong. tell them incorrect password
+        res.json({
+          success: false,
+          message: 'Incorrect password'
+        });
+      } else {
+        // if found with correct password. add them as a collab by adding their id. and tell them success
+        if(doc.collaboratorIDs.indexOf(req.user._id) === -1){
+          doc.collaboratorIDs.push(req.user._id);
+        }
+        doc.save( function(err, d) {
+          if(err) {
+            res.json({
+              success: false,
+              message: "Error updating collaborator ids"
+            });
+          } else {
+            res.json({
+              success: true,
+              message: "Collaborator ids updated"
+            });
+          }
+        });
+      }
+    } else{
+        // if not found. tell them document doesn't exist
+      res.json({
+        success: false,
+        message: 'Document does not exist with that id'
+      });
+    }
+  });
+});
+
 
 // need to fix this
 app.get('/logout', function(req, res) {
@@ -142,6 +318,6 @@ app.get('/logout', function(req, res) {
   res.redirect('/login');
 });
 
-app.listen(3000, function () {
+server.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!');
 });
