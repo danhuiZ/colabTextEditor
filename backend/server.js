@@ -93,7 +93,7 @@ app.post('/newdoc', function(req, res) {
     ownerIDs: [req.user._id],
     collaboratorIDs: [req.user._id],
     hashedpassword: req.body.password,
-    editorState: null
+    editorState: req.body.editorState
   });
 
   newDoc.save(function(err, doc) {

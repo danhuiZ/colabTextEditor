@@ -15,6 +15,7 @@ import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
 import Toggle from 'material-ui/Toggle';
+// import { Link } from 'react-router-dom';
 
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
@@ -246,9 +247,10 @@ class Document extends React.Component {
       docID: self.props.match.params.docID
     })
     .then(function({ data }) {
-      if(JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
+      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
         self.setState({open: true});
       } else {
+        console.log('what the god');
         self.props.history.push('/doc-portal');
       }
     });
@@ -303,18 +305,17 @@ class Document extends React.Component {
             labelPosition="right"
             style={{"margin-top": "10px"}}
            />
-          <Link to='/doc-portal'>
-            <FlatButton
-              className="button"
-              label="Back to Documents Portal"
-              icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
-            />
-          </Link>
+          <FlatButton
+            className="button"
+            label="Back to Documents Portal"
+            icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
+            onTouchTap={() => this.saveReminder()}
+          />
           <FlatButton
             className="button"
             label="Save Changes"
             icon={<FontIcon className='material-icons'>save</FontIcon>}
-            onTouchTap={this.saveReminder.bind(this)}
+            onTouchTap={() => this._onSaveClick()}
           />
           <Dialog
             title="Do you want save?"

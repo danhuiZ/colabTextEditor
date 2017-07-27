@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
+import { EditorState, convertToRaw } from 'draft-js';
+
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
@@ -38,7 +40,8 @@ export default class DocPortal extends React.Component {
       //console.log('PASSWORD', password);
       axios.post('http://localhost:3000/newdoc', {
         title: title,
-        password: password
+        password: password,
+        editorState: JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent()))
       })
       .then(function({ data }){
         if(data.success) {
