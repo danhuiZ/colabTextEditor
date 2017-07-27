@@ -1,11 +1,5 @@
 import React from 'react';
-import { Editor,
-  EditorState,
-  RichUtils,
-  DefaultDraftBlockRenderMap,
-  convertToRaw,
-  convertFromRaw
- } from 'draft-js';
+import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, convertToRaw, convertFromRaw } from 'draft-js';
 import * as colors from 'material-ui/styles/colors';
 import axios from 'axios';
 import FlatButton from 'material-ui/FlatButton';
