@@ -173,7 +173,6 @@ app.post('/save', function(req, res) {
   });
 });
 
-
 app.post('/search-shared', function(req, res) {
   // searches for a document with the docid provided by the user in docportal search
   console.log('HERE FOR NOW ', typeof req.body.docID);
@@ -310,7 +309,6 @@ app.post('/search-shared', function(req, res) {
     }
   });
 });
-
 
 // need to fix this
 app.get('/logout', function(req, res) {

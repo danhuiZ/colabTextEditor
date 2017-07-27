@@ -8,7 +8,7 @@ import Popover from 'material-ui/Popover';
 import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
-import Toggle from 'material-ui/Toggle';
+// import Toggle from 'material-ui/Toggle';
 // import { Link } from 'react-router-dom';
 
 
@@ -38,6 +38,7 @@ class Document extends React.Component {
     this.onChange = (editorState) => {
       this.setState({editorState});
     };
+    // this.handleKeyCommand = this.handleKeyCommand.bind(this);
   }
 
   componentWillMount() {
@@ -242,6 +243,8 @@ class Document extends React.Component {
     })
     .then(function({ data }) {
       if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
+        console.log("JUST WANNA COMPARE", JSON.stringify(convertFromRaw(JSON.parse(data.editorState))))
+        console.log("WUT WUT", JSON.stringify(self.state.editorState.getCurrentContent()));
         self.setState({open: true});
       } else {
         console.log('what the god');
@@ -315,7 +318,7 @@ class Document extends React.Component {
             onTouchTap={() => this._onSaveClick()}
           />
           <Dialog
-            title="Do you want save?"
+            title="Do you want to save?"
             actions={actions}
             modal={true}
             open={this.state.open}
@@ -323,7 +326,7 @@ class Document extends React.Component {
         </div>
 
         <div className="toolbar">
-          <div clasName="toolbar1">
+          <div className="toolbar1">
             <div className="toolbar-item">
               {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
             </div>
@@ -337,7 +340,7 @@ class Document extends React.Component {
               {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
             </div>
           </div>
-          <div clasName="toolbar2">
+          <div className="toolbar2">
             <div className="toolbar-item">
               {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
             </div>
@@ -354,7 +357,7 @@ class Document extends React.Component {
               {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
             </div>
           </div>
-          <div clasName="toolbar3">
+          <div className="toolbar3">
             <div className="toolbar-item">
               {this.colorPicker()}
             </div>
@@ -376,6 +379,7 @@ class Document extends React.Component {
             blockRenderMap={myBlockTypes}
             customStyleMap={this.state.inlineStyles}
             editorState={this.state.editorState}
+            // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             spellCheck={true}
           />
