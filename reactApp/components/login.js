@@ -81,7 +81,7 @@ class Login extends React.Component {
               <button
                 type="submit"
                 className="btn green waves-effect waves-light"
-                onClick={() => this.handleSubmit()}
+                onClick={(e) => this.handleSubmit(e)}
                 >Login</button>
             </div>
           </form>

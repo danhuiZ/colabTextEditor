@@ -1,12 +1,18 @@
-const express = require('express');
+var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var session = require('express-session');
 
+var app = express();
 
-const app = express();
+//io stuff
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+var sockets = require('./sockets.js');
+
 mongoose.connect(process.env.MONGODB_URI, function(err) {
   if(err) {
     console.log('Error');
@@ -21,6 +27,7 @@ var Document = require('./models.js').Document;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(sockets(io)); // this needs to work
 
 // PASSPORT FLOW
 
@@ -179,7 +186,7 @@ app.post('/search-shared', function(req, res) {
     res.json({
       success: false,
       message: 'Invalid DocID'
-    })
+    });
     return;
   }
 
@@ -295,7 +302,7 @@ app.post('/search-shared', function(req, res) {
           } else {
             res.json({
               success: true,
-              message: "Collaborato ids updated"
+              message: "Collaborator ids updated"
             });
           }
         });
@@ -311,13 +318,12 @@ app.post('/search-shared', function(req, res) {
 });
 
 
-
 // need to fix this
 app.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/login');
 });
 
-app.listen(3000, function () {
+server.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!');
 });

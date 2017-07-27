@@ -114,6 +114,7 @@ export default class DocPortal extends React.Component {
         <div className = "my-docs">
           <h4>My Documents</h4>
           <ul>
+
             {this.state.myDocs.map( doc => {
               return <li key={doc._id}><Link to={`/documents/${doc._id}`}>{doc.title}</Link></li>;
             })}
