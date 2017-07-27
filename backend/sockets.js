@@ -9,9 +9,9 @@ module.exports = function(app, io) {
       console.log('A user joined the room :)');
     });
 
-    socket.on('onChange', function(updateObj) {
+    socket.on('onChange', function({contentState, roomName}) {
       console.log('lit we get here');
-      socket.to(updateObj.roomName).emit('updateOnChange', updateObj.editorState);
+      socket.to(roomName).emit('updateOnChange', contentState);
     });
   });
 };

@@ -34,15 +34,18 @@ class Document extends React.Component {
       openHighlighter: false,
       open: false,
     };
+
     this.onChange = (editorState) => {
       this.setState({editorState});
-      this.props.socket.emit('onChange', {editorState: editorState, roomName: this.props.match.params.docID});
+      this.props.socket.emit('onChange', {contentState: JSON.stringify(convertToRaw(editorState.getCurrentContent()))  , roomName: this.props.match.params.docID});
+      //this is where its passed
     };
 
     var self = this;
-    this.props.socket.on('updateOnChange', function(updatedEditorState) {
+    this.props.socket.on('updateOnChange', function(contentState) {
       console.log('yayayay');
-      self.setState({editorState: updatedEditorState});
+      self.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contentState)))  });
+      //this is wehre you parse
     });
   }
 
