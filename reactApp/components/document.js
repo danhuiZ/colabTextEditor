@@ -35,16 +35,40 @@ class Document extends React.Component {
       open: false,
     };
 
+    this.previousHighlight = null;
+
     this.onChange = (editorState) => {
+      const selection = editorState.getSelection();
+
+      if(this.previousHighlight) {
+        console.log('andrew');
+        editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+        editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+        editorState = EditorState.acceptSelection(editorState, selection);
+      }
+
+      editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      this.previousHighlight = editorState.getSelection();
+
+
       this.setState({editorState});
-      this.props.socket.emit('onChange', {contentState: JSON.stringify(convertToRaw(editorState.getCurrentContent()))  , roomName: this.props.match.params.docID});
+      this.props.socket.emit('onChange', {
+        contentState: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+        inlineStyles: this.state.inlineStyles,
+        fontSize: this.state.fontSize,
+        roomName: this.props.match.params.docID
+      });
       //this is where its passed
     };
 
     var self = this;
-    this.props.socket.on('updateOnChange', function(contentState) {
+    this.props.socket.on('updateOnChange', function({ contentState, fontSize, inlineStyles }) {
       console.log('yayayay');
-      self.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contentState)))  });
+      self.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contentState))),
+        fontSize: fontSize,
+        inlineStyles: inlineStyles
+      });
       //this is wehre you parse
     });
   }
@@ -86,7 +110,6 @@ class Document extends React.Component {
 
   componentDidMount() {
     this.props.socket.emit('joinRoom', this.props.match.params.docID);
-
   }
 
   formatColor(color) {
