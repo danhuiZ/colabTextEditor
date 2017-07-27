@@ -9,9 +9,9 @@ module.exports = function(app, io) {
       console.log('A user joined the room :)');
     });
 
-    socket.on('onChange', function({contentState, roomName}) {
+    socket.on('onChange', function({contentState, inlineStyles, fontSize, roomName}) {
       console.log('lit we get here');
-      socket.to(roomName).emit('updateOnChange', contentState);
+      socket.to(roomName).emit('updateOnChange', {contentState: contentState, inlineStyles: inlineStyles, fontSize: fontSize});
     });
   });
 };

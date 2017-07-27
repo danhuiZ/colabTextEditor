@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
 import { EditorState, convertToRaw } from 'draft-js';
+var Immutable = require('immutable');
 
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
@@ -100,6 +101,23 @@ export default class DocPortal extends React.Component {
     });
   }
 
+  onDeleteClick(e) {
+    var self = this;
+    var docID = e.target.value;
+    axios.post('http://localhost:3000/deletedoc', {docID: docID})
+    .then( function({data}) {
+      if(data.sucess){
+
+        var newMyDocs = self.state.myDocs.slice();
+        newMyDocs = newMyDocs.filter(doc => doc._id !== docID );
+        console.log('hereboihereboi', newMyDocs);
+        self.setState({
+          myDocs: newMyDocs
+        })
+
+      }
+    });
+  }
 
   componentWillMount() {
     //load all the documents into the state of this component under myDocs
@@ -123,13 +141,17 @@ export default class DocPortal extends React.Component {
           <List>
             <Subheader inset={true}>My Documents</Subheader>
             {this.state.myDocs.map( doc => {
-              return (<ListItem
-                style={{"width": "40%"}}
-                leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={colors.blue500} />}
-                containerElement={<Link to={`/documents/${doc._id}`}></Link>}
-                primaryText={doc.title}
-                key={doc._id}
-              />);
+              return (
+                <div key={doc._id}>
+                  <ListItem
+                  style={{"width": "40%"}}
+                  leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={colors.blue500} />}
+                  containerElement={<Link to={`/documents/${doc._id}`}></Link>}
+                  primaryText={doc.title}
+                />
+                <button name='delete' value={doc._id} onClick={(e) => this.onDeleteClick(e)}>X</button>
+              </div>
+            );
             })}
           </List>
         </div>
