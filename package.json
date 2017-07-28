@@ -58,9 +58,9 @@
     "react-motion": "^0.5.0",
     "react-router-dom": "^4.1.2",
     "react-tap-event-plugin": "^2.0.1",
-    "socket.io-client": "^2.0.3",
     "smalltalk": "^2.4.1",
     "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3",
     "url-loader": "^0.5.9"
   }
 }
