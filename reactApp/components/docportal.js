@@ -156,7 +156,7 @@ export default class DocPortal extends React.Component {
         type="text"
         style={{'boxShadow': 'none'}}
         value={this.state.docPass}
-        onChange={() => this.handleNewDocPassChange()}
+        onChange={(event) => this.handleNewDocPassChange(event)}
       />,
       <FlatButton
         label="Submit"
