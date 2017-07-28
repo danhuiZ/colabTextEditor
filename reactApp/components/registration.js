@@ -49,7 +49,6 @@ class Registration extends React.Component {
           <CardMedia
             // overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
           >
-            {/* <img src="andrew.jpg" /> */}
           </CardMedia>
           <CardTitle title="Register with us" subtitle="the document management tool that you deserve" />
           <CardText>

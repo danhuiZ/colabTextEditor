@@ -1,8 +1,8 @@
 module.exports = function(app, io) {
   io.on('connection', function(socket) {
-    socket.on('sayHello', function(message) {
-      console.log(message);
-    });
+    // socket.on('sayHello', function(message) {
+    //   console.log(message);
+    // });
 
     socket.on('joinRoom', function(roomID) {
       socket.join(roomID);

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import {Card, CardActions, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import { Card, CardActions, CardMedia, CardTitle, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 // require('../img');
@@ -55,7 +55,7 @@ class Login extends React.Component {
           <CardMedia
             // overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
           >
-
+            <img src='img/chatbot.png' />
           </CardMedia>
           <CardTitle title="Login with us" subtitle="the document management tool that you deserve"/>
           <CardText>
@@ -67,6 +67,7 @@ class Login extends React.Component {
               value={this.state.username}
               onChange={(event) => this.handleUser(event)}
             />
+            <br></br>
             <TextField
               floatingLabelText="Password"
               type="password"
@@ -74,6 +75,7 @@ class Login extends React.Component {
               value={this.state.password}
               onChange={(event) => this.handlePass(event)}
             />
+            <br></br>
           </CardText>
           <CardActions>
             <RaisedButton

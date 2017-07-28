@@ -8,6 +8,8 @@ import Popover from 'material-ui/Popover';
 import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
+// import Toggle from 'material-ui/Toggle';
+
 // import { Link } from 'react-router-dom';
 
 
@@ -356,7 +358,7 @@ class Document extends React.Component {
             onTouchTap={() => this._onSaveClick()}
           />
           <Dialog
-            title="Do you want save?"
+            title="Do you want to save?"
             actions={actions}
             modal={true}
             open={this.state.open}
@@ -417,6 +419,7 @@ class Document extends React.Component {
             blockRenderMap={myBlockTypes}
             customStyleMap={this.state.inlineStyles}
             editorState={this.state.editorState}
+            // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             spellCheck={true}
           />
