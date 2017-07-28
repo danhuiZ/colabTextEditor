@@ -7,6 +7,8 @@ import { List, ListItem } from 'material-ui/List';
 import { EditorState, convertToRaw } from 'draft-js';
 var Immutable = require('immutable');
 
+console.log('sup');
+
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
@@ -38,6 +40,7 @@ export default class DocPortal extends React.Component {
     var title = this.state.docID;
     smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
+
       axios.post('http://localhost:3000/newdoc', {
         title: title,
         password: password,
