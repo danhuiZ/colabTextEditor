@@ -238,11 +238,8 @@ export default class DocPortal extends React.Component {
               <br></br>
               <RaisedButton
                 label="Search for Shared Doc"
-                // onTouchTap={() => this.handleSharedDocSubmit()}
                 onTouchTap={() => this.setState({docShareModal: true})}
               />
-              {/* <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
-              <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button> */}
             </div>
             <div className="logout">
               <Link to='/'>
