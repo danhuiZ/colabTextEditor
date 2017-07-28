@@ -82,14 +82,16 @@ export default class DocPortal extends React.Component {
   }
 
   handleSharedDocSubmit() {
-    var sharedDocID = this.state.sharedDocID;
-    this.setState({
-      sharedDocID: ''
-    });
+    //update with material modal
     var self = this;
+    var sharedDocID = this.state.sharedDocID;
+    var password = this.state.docPass;
+    // this.setState({
+    //   sharedDocID: ''
+    // });
     // ask for password
-    smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
-    .then( function(password) {
+    // smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
+    // .then( function(password) {
       // post to route in Backend
       axios.post('http://localhost:3000/search-shared', {
         docID: sharedDocID,
@@ -97,21 +99,28 @@ export default class DocPortal extends React.Component {
       })
       .then( function({ data }) {
         // process response and either stay on doc portal with the proper alert or redirect to populated document page
-        if(data.success === true){
+        if(data.success){
           self.props.history.push(`/documents/${sharedDocID}`);
-        } else if (data.message === 'Invalid DocID') {
-          smalltalk.alert('TRY AGAIN', 'Invalid DocID')
-            .then( function() {
-              console.log('okie');
-            });
-        }else if(data.message === 'Incorrect password'){
-          smalltalk.alert('TRY AGAIN', 'Invalid Password')
-            .then( function() {
-              console.log('okie2');
-            });
+        } else {
+          self.setState({docShareModal: false});
+          smalltalk.alert('TRY AGAIN', 'Invalid DocID or Password')
+              .then( function() {
+                console.log('okie');
+              });
         }
+        // else if (data.message === 'Invalid DocID') {
+        //   smalltalk.alert('TRY AGAIN', 'Invalid DocID')
+        //     .then( function() {
+        //       console.log('okie');
+        //     });
+        // } else if(data.message === 'Incorrect password'){
+        //   smalltalk.alert('TRY AGAIN', 'Invalid Password')
+        //     .then( function() {
+        //       console.log('okie2');
+        //     });
+        // }
       });
-    });
+    // });
   }
 
   onDeleteClick(docID) {
@@ -156,7 +165,7 @@ export default class DocPortal extends React.Component {
         type="text"
         style={{'boxShadow': 'none'}}
         value={this.state.docPass}
-        onChange={() => this.handleNewDocPassChange()}
+        onChange={(e) => this.handleNewDocPassChange(e)}
       />,
       <FlatButton
         label="Submit"
@@ -174,18 +183,18 @@ export default class DocPortal extends React.Component {
         floatingLabelText="Password"
         type="text"
         style={{'boxShadow': 'none'}}
-        value={this.state.docID}
-        onChange={() => this.handleSharePass()}
-      />,
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={() => this.setState({docCreateModal: false})}
+        value={this.state.docPass}
+        onChange={(e) => this.handleNewDocPassChange(e)}
       />,
       <FlatButton
         label="Submit"
         primary={true}
-        onTouchTap={() => this.handleNewDocSubmit()}
+        onTouchTap={() => this.handleSharedDocSubmit()}
+      />,
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={() => this.setState({docShareModal: false})}
       />
     ];
     return(
@@ -242,7 +251,8 @@ export default class DocPortal extends React.Component {
               <br></br>
               <RaisedButton
                 label="Search for Shared Doc"
-                onTouchTap={() => this.handleSharedDocSubmit()}
+                // onTouchTap={() => this.handleSharedDocSubmit()}
+                onTouchTap={() => this.setState({docShareModal: true})}
               />
               {/* <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
               <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button> */}
@@ -264,7 +274,14 @@ export default class DocPortal extends React.Component {
               open={this.state.docCreateModal}
             />
           </div>
-
+          <div className="modals">
+            <Dialog
+              title="Enter the password for shared document"
+              actions={shareActions}
+              modal={true}
+              open={this.state.docShareModal}
+            />
+          </div>
         </div>
         </div>
       </div>

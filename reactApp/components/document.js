@@ -8,7 +8,7 @@ import Popover from 'material-ui/Popover';
 import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardHeader} from 'material-ui/Card';
 // import Toggle from 'material-ui/Toggle';
 // import { Link } from 'react-router-dom';
 
