@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 // var Immutable = require('immutable');
 
 console.log('sup');
@@ -53,7 +53,7 @@ export default class DocPortal extends React.Component {
     axios.post('http://localhost:3000/newdoc', {
       title: title,
       password: password,
-      editorState: JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent()))
+      editorState: JSON.stringify(convertToRaw(ContentState.createFromText('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')))
     })
       .then(function({ data }){
         if(data.success) {
@@ -156,7 +156,7 @@ export default class DocPortal extends React.Component {
         type="text"
         style={{'boxShadow': 'none'}}
         value={this.state.docPass}
-        onChange={() => this.handleNewDocPassChange()}
+        onChange={(event) => this.handleNewDocPassChange(event)}
       />,
       <FlatButton
         label="Submit"

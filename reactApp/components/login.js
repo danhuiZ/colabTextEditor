@@ -55,7 +55,7 @@ class Login extends React.Component {
           <CardMedia
             // overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
           >
-            <img src='img/chatbot.png' />
+            {/* <img src='img/chatbot.png' /> */}
           </CardMedia>
           <CardTitle title="Login with us" subtitle="the document management tool that you deserve"/>
           <CardText>

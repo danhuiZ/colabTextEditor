@@ -29,7 +29,7 @@ class Document extends React.Component {
     super(props);
     this.state = {
       title: '',
-      editorState: EditorState.createEmpty(),
+      editorState: EditorState.createEmpty(), // EditorState.createWithContent(ContentState.createFromText('hi andrew'))
       inlineStyles: {},
       fontSize: 12,
       openColorPicker: false,
