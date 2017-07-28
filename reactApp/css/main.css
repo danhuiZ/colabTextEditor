@@ -63,8 +63,39 @@ h1 {
   text-align: left;
 }
 
+.list-docs{
+  position: relative;
+}
+
+.my-docs{
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 25px;
+  border: 2px solid rgba(72, 133, 237, 1);
+  padding: 10px 50px !important;
+}
 
 
+.docportal-main{
+  display: flex;
+}
+
+.doc-item {
+  height: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 210px;
+}
+
+
+.doc-controls {
+  margin-left: 10%;
+  margin-right: 35%;
+}
+
+.logout {
+  margin-right: 50%;
+}
 
 .center-align {
   text-align: center;
