@@ -64,7 +64,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/failed' }),function(req, res) {
-  console.log(req.body);
   res.json({success: true});
 });
 
@@ -72,7 +71,6 @@ app.get('/failed', function(req, res) {
   res.json({success: false});
 });
 
-// need to fix this
 app.post('/register', function(req, res) {
   var newUser = new User({
     username: req.body.username,
@@ -114,6 +112,16 @@ app.post('/newdoc', function(req, res) {
     });
   });
 });
+
+app.post('/deletedoc', function(req, res) {
+  Document.findByIdAndRemove(req.body.docID, function(err){
+    if(err){
+      res.json(err);
+      return;
+    }
+    res.json({sucess: true});
+  })
+})
 
 app.get('/getdocs', function(req, res) {
 
