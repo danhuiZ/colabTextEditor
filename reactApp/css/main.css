@@ -72,8 +72,8 @@ h1 {
   overflow-y: auto;
   border-radius: 25px;
   border: 2px solid rgba(72, 133, 237, 1);
-  padding: 10px 50px !important;
-  padding-right: 25px !important;
+  padding: 10px 30px !important;
+  /*padding-right: 25px !important;*/
 }
 
 
@@ -150,4 +150,8 @@ h1 {
 .card {
   margin: 50px 20px;
   padding: 10px;
+}
+
+.listItem {
+  display: flex
 }

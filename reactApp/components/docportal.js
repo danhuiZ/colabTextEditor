@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
 import { EditorState, convertToRaw } from 'draft-js';
-var Immutable = require('immutable');
+// var Immutable = require('immutable');
 
 console.log('sup');
 
@@ -16,6 +16,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
 
 
 export default class DocPortal extends React.Component {
@@ -103,9 +104,10 @@ export default class DocPortal extends React.Component {
     });
   }
 
-  onDeleteClick(e) {
+  onDeleteClick(docID) {
     var self = this;
-    var docID = e.target.value;
+    console.log('TRYING TO DELETE');
+    // var docID = e.target.value;
     axios.post('http://localhost:3000/deletedoc', {docID: docID})
     .then( function({data}) {
       if(data.sucess){
@@ -115,11 +117,13 @@ export default class DocPortal extends React.Component {
         console.log('hereboihereboi', newMyDocs);
         self.setState({
           myDocs: newMyDocs
-        })
+        });
 
       }
     });
   }
+
+
 
   componentWillMount() {
     //load all the documents into the state of this component under myDocs
@@ -145,16 +149,20 @@ export default class DocPortal extends React.Component {
               <List className = "my-docs">
                 {this.state.myDocs.map( doc => {
                   return (
-                    <div key={doc._id}>
+                    <div key={doc._id} className="listItem">
                       <ListItem
                       className="doc-item"
                       leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={colors.blue500} />}
                       containerElement={<Link to={`/documents/${doc._id}`}></Link>}
                       primaryText={doc.title}
                     />
-                    <button name='delete' value={doc._id} onClick={(e) => this.onDeleteClick(e)}>X</button>
+                     <IconButton
+                       iconClassName="material-icons"
+                       iconStyle={{color: colors.blue500, display: 'in-line'}}
+                       onTouchTap={() => this.onDeleteClick(doc._id)}>delete_forever
+                     </IconButton>
                   </div>
-                );
+                  );
                 })}
               </List>
             </div> : <div></div>
@@ -179,6 +187,7 @@ export default class DocPortal extends React.Component {
               <TextField
                 floatingLabelText="paste a doc ID shared with you"
                 type="text"
+                style={{'boxShadow': 'none'}}
                 value={this.state.sharedDocID}
                 onChange={(event) => this.handleSharedDocChange(event)}
               />

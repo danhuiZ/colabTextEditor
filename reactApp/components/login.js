@@ -67,6 +67,7 @@ class Login extends React.Component {
               value={this.state.username}
               onChange={(event) => this.handleUser(event)}
             />
+            <br></br>
             <TextField
               floatingLabelText="Password"
               type="password"
@@ -74,6 +75,7 @@ class Login extends React.Component {
               value={this.state.password}
               onChange={(event) => this.handlePass(event)}
             />
+            <br></br>
           </CardText>
           <CardActions>
             <RaisedButton

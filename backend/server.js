@@ -120,8 +120,8 @@ app.post('/deletedoc', function(req, res) {
       return;
     }
     res.json({sucess: true});
-  })
-})
+  });
+});
 
 app.get('/getdocs', function(req, res) {
 
@@ -157,25 +157,6 @@ app.post('/retrieval', function(req, res) {
       console.log('we are finding by this ID', req.body.docID);
       console.log('this is the document', document);
       res.json(document);
-    }
-  });
-});
-
-app.post('/save', function(req, res) {
-  console.log(typeof req.body.editorState);
-  Document.findById(req.body.docID, function(err, document) {
-    if(err) {
-      console.log('There was an error :(', err);
-    }
-    if(document) {
-      document.editorState = req.body.editorState;
-      document.save(function(err) {
-        if(err) {
-          console.log('There was an err :(', err);
-        } else {
-          res.send(200);
-        }
-      });
     }
   });
 });
@@ -234,18 +215,6 @@ app.post('/search-shared', function(req, res) {
         success: false,
         message: 'Document does not exist with that id'
       });
-    }
-  });
-});
-
-app.post('/retrieval', function(req, res) {
-  Document.findById(req.body.docID, function(err, document) {
-    if(err) {
-      console.log('There was an error :(', err);
-    } else {
-      console.log('we are finding by this ID', req.body.docID);
-      console.log('this is the document', document);
-      res.json(document);
     }
   });
 });
@@ -319,6 +288,8 @@ app.post('/search-shared', function(req, res) {
 
 // need to fix this
 app.get('/logout', function(req, res) {
+  console.log('LOGGING OUT----------- REQ.SESSION', req.session);
+  console.log('LOGGING OUT----------- REQ.LOGOUT', req.logout());
   req.logout();
   res.redirect('/login');
 });
