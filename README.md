@@ -1,19 +1,26 @@
-# A team of 3, venturing out to build the prestigious Google Documents Platform. 
-The team comprises of full-stack engineers, Danhui, Andrew and Mohammad (perhaps Yash too but we're waiting).
+# Collaborative Text Editor aka Google Documents Clone
 
-We have multiple milestones to hit so we can must move fast and effectively.
-## The technologies that will be used are React, Redux, Express, Node, and some other fun stuff.
+The application is a native-desktop real-time text editor. It allows you to create an account, create documents, and share documents with friends who can change or view your documents. 
 
-#### Milestones and Goals: 
-https://docs.google.com/document/d/1VB4cwsCERCTwL74aeoBd1UpH9vDLiZTSYb8ocbxusrQ/edit
+## Built With
 
-### Day 1: 
+* Draft.JS
+* React
+* Node
+* Electron
+* Socket.IO
 
-Completed Milestone 1. 
+## Authors
 
-### Day 2: 
+* **Danhui Zhang** [Danhui's Github](https://github.com/andrew-eells)
+* **Andrew Eells** [Andrew's Github](https://github.com/danhuiZ)
+* **Mohammad Syed** [Mohammad's Github](https://github.com/mohammad-gitup)
 
-90% done with Milestone 2. Need to add collaboration feature and "Remember to Save" alert.
 
-### Day 3: 
+## License
 
+This project is licensed under the MIT License
+
+## Acknowledgments
+
+* Hat tip to Yashvardhan Nevatia and Jay Lim
