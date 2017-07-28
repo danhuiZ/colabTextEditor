@@ -1,5 +1,13 @@
 import React from 'react';
-import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap, convertToRaw, convertFromRaw } from 'draft-js';
+import {  Editor,
+          EditorState,
+          RichUtils,
+          DefaultDraftBlockRenderMap,
+          convertToRaw,
+          convertFromRaw,
+          getDefaultKeyBinding,
+          KeyBindingUtil }
+from 'draft-js';
 import * as colors from 'material-ui/styles/colors';
 import axios from 'axios';
 import FlatButton from 'material-ui/FlatButton';
@@ -11,7 +19,7 @@ import { Map } from 'immutable';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
 // import Toggle from 'material-ui/Toggle';
 // import { Link } from 'react-router-dom';
-
+const {hasCommandModifier} = KeyBindingUtil;
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
   center: {
@@ -21,7 +29,6 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
     wrapper: <div className="right-align" />
   }
 }));
-
 
 class Document extends React.Component {
 
@@ -112,6 +119,14 @@ class Document extends React.Component {
 
   componentDidMount() {
     this.props.socket.emit('joinRoom', this.props.match.params.docID);
+  }
+
+  handleKeyCommand(command: string): DraftHandleValue {
+    if (command === 'myeditor-save') {
+      this._onSaveClick();
+      return 'handled';
+    }
+    return 'not-handled';
   }
 
   formatColor(color) {
@@ -432,6 +447,8 @@ class Document extends React.Component {
             // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             spellCheck={true}
+            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            keyBindingFn={myKeyBindingFn}
           />
         </div>
 
@@ -439,6 +456,13 @@ class Document extends React.Component {
     </div>
     );
   }
+}
+
+function myKeyBindingFn(e: SyntheticKeyboardEvent): string {
+  if (e.keyCode === 83 /* `S` key */ && hasCommandModifier(e)) {
+    return 'myeditor-save';
+  }
+  return getDefaultKeyBinding(e);
 }
 
 export default Document;
