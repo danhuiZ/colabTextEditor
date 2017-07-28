@@ -19,6 +19,7 @@ class Login extends React.Component {
     this.handleUser = this.handleUser.bind(this);
     this.handlePass = this.handlePass.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
   }
 
   handleUser(e) {

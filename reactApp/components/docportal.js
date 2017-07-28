@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
 import { EditorState, convertToRaw } from 'draft-js';
+var Immutable = require('immutable');
+
+console.log('sup');
 
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
@@ -37,7 +40,7 @@ export default class DocPortal extends React.Component {
     var title = this.state.docID;
     smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
     .then(function(password){
-      //console.log('PASSWORD', password);
+
       axios.post('http://localhost:3000/newdoc', {
         title: title,
         password: password,
@@ -100,6 +103,23 @@ export default class DocPortal extends React.Component {
     });
   }
 
+  onDeleteClick(e) {
+    var self = this;
+    var docID = e.target.value;
+    axios.post('http://localhost:3000/deletedoc', {docID: docID})
+    .then( function({data}) {
+      if(data.sucess){
+
+        var newMyDocs = self.state.myDocs.slice();
+        newMyDocs = newMyDocs.filter(doc => doc._id !== docID );
+        console.log('hereboihereboi', newMyDocs);
+        self.setState({
+          myDocs: newMyDocs
+        })
+
+      }
+    });
+  }
 
   componentWillMount() {
     //load all the documents into the state of this component under myDocs
@@ -118,58 +138,69 @@ export default class DocPortal extends React.Component {
   render() {
     return(
       <div className="docportal">
-        <div className = "my-docs">
-          {/* <h4>My Documents</h4> */}
-          <List>
-            <Subheader inset={true}>My Documents</Subheader>
-            {this.state.myDocs.map( doc => {
-              return (<ListItem
-                style={{"width": "40%"}}
-                leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={colors.blue500} />}
-                containerElement={<Link to={`/documents/${doc._id}`}></Link>}
-                primaryText={doc.title}
-                key={doc._id}
-              />);
-            })}
-          </List>
+        <Subheader inset={true}>My Documents</Subheader>
+        <div className = "docportal-main">
+          {this.state.myDocs.length !== 0 ?
+            <div className ='list-docs'>
+              <List className = "my-docs">
+                {this.state.myDocs.map( doc => {
+                  return (
+                    <div key={doc._id}>
+                      <ListItem
+                      className="doc-item"
+                      leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={colors.blue500} />}
+                      containerElement={<Link to={`/documents/${doc._id}`}></Link>}
+                      primaryText={doc.title}
+                    />
+                    <button name='delete' value={doc._id} onClick={(e) => this.onDeleteClick(e)}>X</button>
+                  </div>
+                );
+                })}
+              </List>
+            </div> : <div></div>
+          }
+
+          <div className='doc-controls'>
+            <div className = "new-doc">
+              <TextField
+                floatingLabelText="New Document Title"
+                type="text"
+                style={{'boxShadow': 'none'}}
+                value={this.state.docID}
+                onChange={(event) => this.handleNewDocChange(event)}
+              />
+              <br></br>
+              <RaisedButton
+                label="Create Document"
+                onTouchTap={() => this.handleNewDocSubmit()}
+              />
+            </div>
+            <div className = "shared-doc">
+              <TextField
+                floatingLabelText="paste a doc ID shared with you"
+                type="text"
+                value={this.state.sharedDocID}
+                onChange={(event) => this.handleSharedDocChange(event)}
+              />
+              <br></br>
+              <RaisedButton
+                label="Search for Shared Doc"
+                onTouchTap={() => this.handleSharedDocSubmit()}
+              />
+              {/* <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
+              <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button> */}
+            </div>
+            <div className="logout">
+              <Link to='/'>
+                <FlatButton
+                  className="button"
+                  label="Log out"
+                  icon={<FontIcon className='material-icons'>account_circle</FontIcon>}
+                />
+              </Link>
+          </div>
+
         </div>
-        <div className = "new-doc">
-          <TextField
-            floatingLabelText="New Document Title"
-            type="text"
-            style={{'boxShadow': 'none'}}
-            value={this.state.docID}
-            onChange={(event) => this.handleNewDocChange(event)}
-          />
-          <br></br>
-          <RaisedButton
-            label="Create Document"
-            onTouchTap={() => this.handleNewDocSubmit()}
-          />
-        </div>
-        <div className = "shared-doc">
-          <TextField
-            floatingLabelText="paste a doc ID shared with you"
-            type="text"
-            value={this.state.sharedDocID}
-            onChange={(event) => this.handleSharedDocChange(event)}
-          />
-          <br></br>
-          <RaisedButton
-            label="Search for Shared Doc"
-            onTouchTap={() => this.handleSharedDocSubmit()}
-          />
-          {/* <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
-          <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button> */}
-        </div>
-        <div className="logout">
-          <Link to='/'>
-            <FlatButton
-              className="button"
-              label="Log out"
-              icon={<FontIcon className='material-icons'>account_circle</FontIcon>}
-            />
-          </Link>
         </div>
       </div>
     );

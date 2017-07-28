@@ -9,6 +9,7 @@ import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
 // import Toggle from 'material-ui/Toggle';
+
 // import { Link } from 'react-router-dom';
 
 
@@ -35,10 +36,43 @@ class Document extends React.Component {
       openHighlighter: false,
       open: false,
     };
+
+    this.previousHighlight = null;
+
     this.onChange = (editorState) => {
+      const selection = editorState.getSelection();
+
+      if(this.previousHighlight) {
+        console.log('andrew');
+        editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+        editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+        editorState = EditorState.acceptSelection(editorState, selection);
+      }
+
+      editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      this.previousHighlight = editorState.getSelection();
+
+
       this.setState({editorState});
+      this.props.socket.emit('onChange', {
+        contentState: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+        inlineStyles: this.state.inlineStyles,
+        fontSize: this.state.fontSize,
+        roomName: this.props.match.params.docID
+      });
+      //this is where its passed
     };
-    // this.handleKeyCommand = this.handleKeyCommand.bind(this);
+
+    var self = this;
+    this.props.socket.on('updateOnChange', function({ contentState, fontSize, inlineStyles }) {
+      console.log('yayayay');
+      self.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contentState))),
+        fontSize: fontSize,
+        inlineStyles: inlineStyles
+      });
+      //this is wehre you parse
+    });
   }
 
   componentWillMount() {
@@ -74,6 +108,10 @@ class Document extends React.Component {
         });
       }
     });
+  }
+
+  componentDidMount() {
+    this.props.socket.emit('joinRoom', this.props.match.params.docID);
   }
 
   formatColor(color) {
@@ -242,9 +280,11 @@ class Document extends React.Component {
       docID: self.props.match.params.docID
     })
     .then(function({ data }) {
-      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState))) !== JSON.stringify(self.state.editorState.getCurrentContent())) {
-        console.log("JUST WANNA COMPARE", JSON.stringify(convertFromRaw(JSON.parse(data.editorState))))
-        console.log("WUT WUT", JSON.stringify(self.state.editorState.getCurrentContent()));
+
+      console.log('this is the data base stuff', JSON.stringify(convertFromRaw(JSON.parse(data.editorState)).blockMap));
+      console.log('this is the stuff on the document', JSON.stringify(self.state.editorState.getCurrentContent().blockMap));
+
+      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState)).blockMap) !== JSON.stringify(self.state.editorState.getCurrentContent().blockMap)) {
         self.setState({open: true});
       } else {
         console.log('what the god');

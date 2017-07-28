@@ -11,7 +11,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-var sockets = require('./sockets.js');
+require('./sockets.js')(app, io);
 
 mongoose.connect(process.env.MONGODB_URI, function(err) {
   if(err) {
@@ -25,7 +25,6 @@ var { User, Document } = require('./models.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(sockets(io)); // this needs to work
 
 // PASSPORT FLOW
 
@@ -65,7 +64,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/failed' }),function(req, res) {
-  console.log(req.body);
   res.json({success: true});
 });
 
@@ -73,7 +71,6 @@ app.get('/failed', function(req, res) {
   res.json({success: false});
 });
 
-// need to fix this
 app.post('/register', function(req, res) {
   var newUser = new User({
     username: req.body.username,
@@ -115,6 +112,16 @@ app.post('/newdoc', function(req, res) {
     });
   });
 });
+
+app.post('/deletedoc', function(req, res) {
+  Document.findByIdAndRemove(req.body.docID, function(err){
+    if(err){
+      res.json(err);
+      return;
+    }
+    res.json({sucess: true});
+  })
+})
 
 app.get('/getdocs', function(req, res) {
 
