@@ -4,11 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import * as colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
-// var Immutable = require('immutable');
-
-console.log('sup');
-
+import { convertToRaw, ContentState } from 'draft-js';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
@@ -18,7 +14,7 @@ import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
-
+console.log('Chilling');
 
 export default class DocPortal extends React.Component {
   constructor(props) {
@@ -86,17 +82,11 @@ export default class DocPortal extends React.Component {
     var self = this;
     var sharedDocID = this.state.sharedDocID;
     var password = this.state.docPass;
-    // this.setState({
-    //   sharedDocID: ''
-    // });
-    // ask for password
-    // smalltalk.prompt("Collaborate on a Document", "Please enter the password for document: " + sharedDocID)
-    // .then( function(password) {
-      // post to route in Backend
-      axios.post('http://localhost:3000/search-shared', {
-        docID: sharedDocID,
-        password: password
-      })
+    // post to route in Backend
+    axios.post('http://localhost:3000/search-shared', {
+      docID: sharedDocID,
+      password: password
+    })
       .then( function({ data }) {
         // process response and either stay on doc portal with the proper alert or redirect to populated document page
         if(data.success){
@@ -120,7 +110,6 @@ export default class DocPortal extends React.Component {
         //     });
         // }
       });
-    // });
   }
 
   onDeleteClick(docID) {
@@ -141,8 +130,6 @@ export default class DocPortal extends React.Component {
       }
     });
   }
-
-
 
   componentWillMount() {
     //load all the documents into the state of this component under myDocs
@@ -251,11 +238,8 @@ export default class DocPortal extends React.Component {
               <br></br>
               <RaisedButton
                 label="Search for Shared Doc"
-                // onTouchTap={() => this.handleSharedDocSubmit()}
                 onTouchTap={() => this.setState({docShareModal: true})}
               />
-              {/* <input type="text" value={this.state.sharedDocID} onChange={(event) => this.handleSharedDocChange(event)} placeholder="paste a doc ID shared with you"/>
-              <button onClick={() => this.handleSharedDocSubmit()}>Search for Shared Doc</button> */}
             </div>
             <div className="logout">
               <Link to='/'>

@@ -3,7 +3,8 @@ module.exports = function(app, io) {
     // socket.on('sayHello', function(message) {
     //   console.log(message);
     // });
-
+    console.log("SOCKET ESTABLISHED");
+    
     socket.on('joinRoom', function(roomID) {
       socket.join(roomID);
       console.log('A user joined the room :)');

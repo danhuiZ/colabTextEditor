@@ -19,6 +19,7 @@ import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
 import { Link } from 'react-router-dom';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
+import {Tabs, Tab} from 'material-ui/Tabs';    //revision-history && toolbar tabs
 // import Toggle from 'material-ui/Toggle';
 // import { Link } from 'react-router-dom';
 const {hasCommandModifier} = KeyBindingUtil;
@@ -45,6 +46,8 @@ class Document extends React.Component {
       openHighlighter: false,
       open: false,
       history: []
+      tab: 'a'
+
     };
 
     this.previousHighlight = null;
@@ -343,6 +346,7 @@ class Document extends React.Component {
     this.props.history.push('/doc-portal');
   }
 
+
   _handleHistory(time) {
     var self = this;
     // post to new route and
@@ -356,6 +360,12 @@ class Document extends React.Component {
         editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState)))
       })
     })
+
+
+  handleTabChange(tab) {
+    this.setState({
+      tab: tab,
+    });
 
   }
 
@@ -407,62 +417,79 @@ class Document extends React.Component {
           />
         </div>
 
-        <Card>
+        <Card style={{'boxShadow': 'none'}}>
           <CardHeader
-            // title="Editing tools"
             style={{backgroundColor: "#dddeee"}}
             actAsExpander={true}
             showExpandableButton={true}
           />
-        <CardActions expandable={true} style={{backgroundColor: "#dddeee"}}>
-          <div className="toolbar">
-            <div className="toolbar1">
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
-              </div>
-            </div>
-            <div className="toolbar2">
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
-              </div>
-              <div className="toolbar-item">
-                {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
-              </div>
-            </div>
-            <div className="toolbar3">
-              <div className="toolbar-item">
-                {this.colorPicker()}
-              </div>
-              <div className="toolbar-item">
-                {this.increaseFontSize(true)}
-              </div>
-              <div className="toolbar-item">
-                {this.increaseFontSize(false)}
-              </div>
-              <div className="toolbar-item">
-                {this.highlighter()}
-              </div>
-            </div>
-          </div>
-        </CardActions>
+          <CardActions expandable={true} style={{backgroundColor: "#dddeee"}}>
+            <Tabs
+              value={this.state.tab}
+              onChange={() => this.handleTabChange()}
+              tabItemContainerStyle={{backgroundColor: colors.blue200}}
+              inkBarStyle={{backgroundColor: colors.blue500}}
+            >
+              <Tab label="Revision History" value="a">
+                <div>
+                  <p>
+                    Tabs are also controllable if you want to programmatically pass them their values.
+                    This allows for more functionality in Tabs such as not
+                    having any Tab selected or assigning them different values.
+                  </p>
+                </div>
+              </Tab>
+              <Tab label="Toolbar" value="b">
+                <div className="toolbar">
+                  <div className="toolbar1">
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
+                    </div>
+                  </div>
+                  <div className="toolbar2">
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
+                    </div>
+                  </div>
+                  <div className="toolbar3">
+                    <div className="toolbar-item">
+                      {this.colorPicker()}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.increaseFontSize(true)}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.increaseFontSize(false)}
+                    </div>
+                    <div className="toolbar-item">
+                      {this.highlighter()}
+                    </div>
+                  </div>
+                </div>
+              </Tab>
+            </Tabs>
+          </CardActions>
         </Card>
 
         <div className="container">
@@ -471,7 +498,6 @@ class Document extends React.Component {
             blockRenderMap={myBlockTypes}
             customStyleMap={this.state.inlineStyles}
             editorState={this.state.editorState}
-            // handleKeyCommand={this.handleKeyCommand}
             onChange={this.onChange}
             spellCheck={true}
             handleKeyCommand={this.handleKeyCommand.bind(this)}
