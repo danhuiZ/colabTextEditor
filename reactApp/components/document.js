@@ -45,7 +45,7 @@ class Document extends React.Component {
       openColorPicker: false,
       openHighlighter: false,
       open: false,
-      history: []
+      history: [],
       tab: 'a'
 
     };
@@ -360,13 +360,12 @@ class Document extends React.Component {
         editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState)))
       })
     })
-
+  }
 
   handleTabChange(tab) {
     this.setState({
       tab: tab,
     });
-
   }
 
   render() {
@@ -431,12 +430,19 @@ class Document extends React.Component {
               inkBarStyle={{backgroundColor: colors.blue500}}
             >
               <Tab label="Revision History" value="a">
-                <div>
-                  <p>
-                    Tabs are also controllable if you want to programmatically pass them their values.
-                    This allows for more functionality in Tabs such as not
-                    having any Tab selected or assigning them different values.
-                  </p>
+                <div className = "history">
+                  <List>
+                    {this.state.history.map( histories => {
+                      return (
+                        <ListItem
+                          key={histories.time}
+                          value={histories.time}
+                          primaryText={histories.time}
+                          onClick={() => this._handleHistory(histories.time)}
+                        ></ListItem>
+                      )
+                    })}
+                  </List>
                 </div>
               </Tab>
               <Tab label="Toolbar" value="b">
@@ -505,20 +511,6 @@ class Document extends React.Component {
           />
         </div>
 
-        <div className = "history">
-          <List>
-            {this.state.history.map( histories => {
-              return (
-                <ListItem
-                  key={histories.time}
-                  value={histories.time}
-                  primaryText={histories.time}
-                  onClick={() => this._handleHistory(histories.time)}
-                ></ListItem>
-              )
-            })}
-          </List>
-        </div>
     </div>
     );
   }
