@@ -40,17 +40,17 @@ class Document extends React.Component {
     this.previousHighlight = null;
 
     this.onChange = (editorState) => {
-      const selection = editorState.getSelection();
-
-      if(this.previousHighlight) {
-        console.log('andrew');
-        editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
-        editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
-        editorState = EditorState.acceptSelection(editorState, selection);
-      }
-
-      editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
-      this.previousHighlight = editorState.getSelection();
+      // const selection = editorState.getSelection();
+      //
+      // if(this.previousHighlight) {
+      //   console.log('andrew');
+      //   editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+      //   editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      //   editorState = EditorState.acceptSelection(editorState, selection);
+      // }
+      //
+      // editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      // this.previousHighlight = editorState.getSelection();
 
 
       this.setState({editorState});

@@ -17,6 +17,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton';
+import Dialog from 'material-ui/Dialog';
 
 
 export default class DocPortal extends React.Component {
@@ -25,7 +26,10 @@ export default class DocPortal extends React.Component {
     this.state = {
       myDocs: [],
       docID: '',
-      sharedDocID: ''
+      docPass: '',
+      sharedDocID: '',
+      docCreateModal: false,
+      docShareModal: false
     };
   }
 
@@ -35,18 +39,22 @@ export default class DocPortal extends React.Component {
     });
   }
 
+  handleNewDocPassChange(event) {
+    this.setState({
+      docPass: event.target.value
+    });
+  }
+
   handleNewDocSubmit() {
     //update with material modal
     var self = this;
     var title = this.state.docID;
-    smalltalk.prompt("Create Document", "Please enter a password for " + title + ': ')
-    .then(function(password){
-
-      axios.post('http://localhost:3000/newdoc', {
-        title: title,
-        password: password,
-        editorState: JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent()))
-      })
+    var password = this.state.docPass;
+    axios.post('http://localhost:3000/newdoc', {
+      title: title,
+      password: password,
+      editorState: JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent()))
+    })
       .then(function({ data }){
         if(data.success) {
           //add new doc to mydocs
@@ -59,10 +67,12 @@ export default class DocPortal extends React.Component {
           console.log('failure making doc. redirect back to doc portal');
         }
       });
-    });
+
     self.setState({
-      docID: ''
+      docID: '',
+      docPass: ''
     });
+
   }
 
   handleSharedDocChange(event) {
@@ -140,6 +150,44 @@ export default class DocPortal extends React.Component {
   }
 
   render() {
+    const createActions = [
+      <TextField
+        floatingLabelText="Password"
+        type="text"
+        style={{'boxShadow': 'none'}}
+        value={this.state.docPass}
+        onChange={() => this.handleNewDocPassChange()}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        onTouchTap={() => this.handleNewDocSubmit()}
+      />,
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={() => this.setState({docCreateModal: false})}
+      />
+    ];
+    const shareActions = [
+      <TextField
+        floatingLabelText="Password"
+        type="text"
+        style={{'boxShadow': 'none'}}
+        value={this.state.docID}
+        onChange={() => this.handleSharePass()}
+      />,
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={() => this.setState({docCreateModal: false})}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        onTouchTap={() => this.handleNewDocSubmit()}
+      />
+    ];
     return(
       <div className="docportal">
         <Subheader inset={true}>My Documents</Subheader>
@@ -180,7 +228,7 @@ export default class DocPortal extends React.Component {
               <br></br>
               <RaisedButton
                 label="Create Document"
-                onTouchTap={() => this.handleNewDocSubmit()}
+                onTouchTap={() => this.setState({docCreateModal: true})}
               />
             </div>
             <div className = "shared-doc">
@@ -207,6 +255,14 @@ export default class DocPortal extends React.Component {
                   icon={<FontIcon className='material-icons'>account_circle</FontIcon>}
                 />
               </Link>
+          </div>
+          <div className="modals">
+            <Dialog
+              title="Enter a password"
+              actions={createActions}
+              modal={true}
+              open={this.state.docCreateModal}
+            />
           </div>
 
         </div>
