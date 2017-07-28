@@ -9,6 +9,7 @@ import {  Editor,
           KeyBindingUtil }
 from 'draft-js';
 import * as colors from 'material-ui/styles/colors';
+import { List, ListItem } from 'material-ui/List';
 import axios from 'axios';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -16,6 +17,7 @@ import Popover from 'material-ui/Popover';
 import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
+import { Link } from 'react-router-dom';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
 import {Tabs, Tab} from 'material-ui/Tabs';    //revision-history && toolbar tabs
 // import Toggle from 'material-ui/Toggle';
@@ -43,7 +45,9 @@ class Document extends React.Component {
       openColorPicker: false,
       openHighlighter: false,
       open: false,
+      history: []
       tab: 'a'
+
     };
 
     this.previousHighlight = null;
@@ -91,6 +95,8 @@ class Document extends React.Component {
     })
     .then(function({ data }) {
       if(data.editorState) {
+        // console.log('ANDREW ', data)
+
         var content = JSON.parse(data.editorState);
         var newInlineStyles = Object.assign({}, self.state.inlineStyles);
         content.blocks.forEach(function(block) {
@@ -109,13 +115,15 @@ class Document extends React.Component {
         self.setState({
           editorState: EditorState.createWithContent(convertFromRaw(content)),
           title: data.title,
-          inlineStyles: newInlineStyles
+          inlineStyles: newInlineStyles,
+          history: data.history
         });
       } else {
         self.setState({
           title: data.title
         });
       }
+
     });
   }
 
@@ -311,12 +319,16 @@ class Document extends React.Component {
   }
 
   _onSaveClick() {
+    var self = this;
     axios.post('http://localhost:3000/save', {
       docID: this.props.match.params.docID,
       editorState: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
     })
-     .then(function(resp) {
+     .then(function({data}) {
        console.log('Document successfully saved!');
+       self.setState({
+         history: data.history
+       })
      })
      .catch(function(err) {
        console.log('There was an error', err);
@@ -334,10 +346,27 @@ class Document extends React.Component {
     this.props.history.push('/doc-portal');
   }
 
+
+  _handleHistory(time) {
+    var self = this;
+    // post to new route and
+    axios.post('http://localhost:3000/history', {
+      docID: this.props.match.params.docID,
+      time: time
+    })
+    .then(function({data}) {
+      console.log('dandy ', data);
+      self.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(data.editorState)))
+      })
+    })
+
+
   handleTabChange(tab) {
     this.setState({
       tab: tab,
     });
+
   }
 
   render() {
@@ -476,7 +505,20 @@ class Document extends React.Component {
           />
         </div>
 
-
+        <div className = "history">
+          <List>
+            {this.state.history.map( histories => {
+              return (
+                <ListItem
+                  key={histories.time}
+                  value={histories.time}
+                  primaryText={histories.time}
+                  onClick={() => this._handleHistory(histories.time)}
+                ></ListItem>
+              )
+            })}
+          </List>
+        </div>
     </div>
     );
   }
