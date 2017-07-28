@@ -91,13 +91,24 @@ app.post('/newdoc', function(req, res) {
 
   console.log("USER LOGGED IN ", req.user);
 
+  var date = new Date();
+  var time = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+  var newHistory = {
+    time: time,
+    editorState: req.body.editorState
+  }
+
+  console.log('NEW HISTORY FOR NEW DOC ', newHistory);
+
   // User.findOne({username: })
   var newDoc = new Document({
     title: req.body.title,
     ownerIDs: [req.user._id],
     collaboratorIDs: [req.user._id],
     hashedpassword: req.body.password,
-    editorState: req.body.editorState
+    editorState: req.body.editorState,
+    history: newHistory
   });
 
   newDoc.save(function(err, doc) {
@@ -160,6 +171,29 @@ app.post('/retrieval', function(req, res) {
     }
   });
 });
+
+app.post('/history', function(req, res) {
+  Document.findById(req.body.docID, function(err, document) {
+    if(err) {
+      console.log('errrrrrr ', err);
+    } else {
+      var histories = document.history;
+      for(var i = 0; i < histories.length; i++){
+        if(histories[i].time.indexOf(req.body.time) !== -1){
+          res.json({
+            time: histories[i].time,
+            editorState: histories[i].editorState
+          })
+          return;
+        }
+      }
+
+      console.log("didnt find a history for that");
+      res.send(500);
+
+    }
+  });
+})
 
 app.post('/search-shared', function(req, res) {
   // searches for a document with the docid provided by the user in docportal search
@@ -226,12 +260,24 @@ app.post('/save', function(req, res) {
       console.log('There was an error :(', err);
     }
     if(document) {
+      var date = new Date();
+      var time = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+
+      var newHistory = {
+        time: time,
+        editorState: req.body.editorState
+      }
+      console.log('new history for new save ', newHistory)
+
       document.editorState = req.body.editorState;
+      document.history = document.history.concat(newHistory);
       document.save(function(err) {
         if(err) {
           console.log('There was an err :(', err);
         } else {
-          res.send(200);
+          res.json({
+            history: document.history
+          });
         }
       });
     }

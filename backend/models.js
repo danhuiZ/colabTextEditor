@@ -11,7 +11,8 @@ var documentSchema = mongoose.Schema({
   ownerIDs: Array,
   collaboratorIDs: Array,
   hashedpassword: String,
-  editorState: Object
+  editorState: Object,
+  history: Array
 });
 
 
