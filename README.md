@@ -1,20 +1,26 @@
-# A team of 3, venturing out to build the prestigious Google Documents Platform. 
-The team comprises of full-stack engineers, Danhui, Andrew and Mohammad (perhaps Yash too but we're waiting).
+# Collaborative Text Editor aka Google Documents Clone
 
-We have multiple milestones to hit so we can must move fast and effectively.
-## The technologies that will be used are React, Redux, Express, Node, and some other fun stuff.
+The application is a native-desktop real-time text editor. It allows you to create an account, create documents, and share documents with friends who can change or view your documents. 
 
-#### Milestones and Goals: 
-https://docs.google.com/document/d/1VB4cwsCERCTwL74aeoBd1UpH9vDLiZTSYb8ocbxusrQ/edit
+## Built With
 
-### Day 1: 
+* Draft.JS
+* React
+* Node
+* Electron
+* Socket.IO
+
+## Authors
+
+* **Danhui Zhang** [Danhui's Github](https://github.com/andrew-eells)
+* **Andrew Eells** [Andrew's Github](https://github.com/danhuiZ)
+* **Mohammad Syed** [Mohammad's Github](https://github.com/mohammad-gitup)
 
 
-#### Recommended Articles and Documentation:
-https://medium.com/@adrianli/a-beginner-s-guide-to-draft-js-d1823f58d8cc 
-https://draftjs.org/docs/quickstart-api-basics.html#content
-https://www.draft-js-plugins.com/plugin/alignment
+## License
 
-### Day 2: 
+This project is licensed under the MIT License
 
-Today: Do styling, finish Passport.JS login flow, create functional link between front-end and back end- set up DB.
+## Acknowledgments
+
+* Hat tip to Yashvardhan Nevatia and Jay Lim

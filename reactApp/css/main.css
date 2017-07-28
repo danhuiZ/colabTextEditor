@@ -3,19 +3,100 @@
  font-family: 'Roboto', sans-serif;
 }
 
-h1 {
-  color: rgba(72, 133, 237, 1);
+body {
+  background-color: #dddeee;
+}
+
+.WRAPPER {
   text-align: center;
 }
 
+.docID {
+  color: rgba(2, 30, 82, 0.85);
+}
+
+
+h1 {
+  color: rgba(72, 133, 237, 1);
+  text-align: center;
+  font-size: 36px;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-around;
+}
+
 .toolbar {
-  border-bottom: 2px solid gray;
-  padding: 10px;
+  clear: both;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.toolbar1 {
+  white-space: nowrap;
+}
+.toolbar2 {
+  white-space: nowrap;
+}
+.toolbar3 {
+  white-space: nowrap;
 }
 
 .toolbar > * {
-  margin-right: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+}
+
+.toolbar-item {
+  margin: 2px;
+  display: inline-block;
+}
+
+
+
+.container {
+  padding: 20px;
+  height: 500px;
+  border: 2px solid rgba(72, 133, 237, 1);
+  border-radius: 3px;
+  background-color: #ffffff;
+  text-align: left;
+}
+
+.list-docs{
+  position: relative;
+}
+
+.my-docs{
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 25px;
+  border: 2px solid rgba(72, 133, 237, 1);
+  padding: 10px 30px !important;
+  /*padding-right: 25px !important;*/
+}
+
+
+.docportal-main{
+  display: flex;
+  overflow-x: auto;
+}
+
+.doc-item {
+  height: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 210px;
+}
+
+
+.doc-controls {
+  margin-left: 10%;
+  margin-right: 35%;
+}
+
+.logout {
+  margin-right: 50%;
 }
 
 .center-align {
@@ -31,6 +112,7 @@ h1 {
 }
 
 .button {
+  float: right;
   background-color: rgba(72, 133, 237, 0.8);
   margin-left: 10px;
   margin-right: 5px;
@@ -38,8 +120,38 @@ h1 {
 }
 
 .docID {
-  float: right;
-  font-weight: bold;
-  margin-top: 10px;
   margin-right: 10px;
+}
+
+.login-box {
+  margin-top: 50px;
+  height: 100%;
+}
+
+.docportal {
+  margin: 10px;
+  padding: 10px;
+}
+
+.new-doc {
+  float: right
+}
+
+.shared-doc, .logout{
+  clear: both;
+  float: right
+}
+
+.logout{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.card {
+  margin: 50px 20px;
+  padding: 10px;
+}
+
+.listItem {
+  display: flex
 }

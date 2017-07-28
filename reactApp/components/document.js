@@ -1,12 +1,25 @@
 import React from 'react';
-import { Editor, EditorState, RichUtils, DefaultDraftBlockRenderMap } from 'draft-js';
-// import { Link } from 'react-router-dom';
+import {  Editor,
+          EditorState,
+          RichUtils,
+          DefaultDraftBlockRenderMap,
+          convertToRaw,
+          convertFromRaw,
+          getDefaultKeyBinding,
+          KeyBindingUtil }
+from 'draft-js';
 import * as colors from 'material-ui/styles/colors';
-import RaisedButton from 'material-ui/RaisedButton';
+import axios from 'axios';
+import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import Popover from 'material-ui/Popover';
+import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
+import {Card, CardActions, CardHeader} from 'material-ui/Card';
+// import Toggle from 'material-ui/Toggle';
+// import { Link } from 'react-router-dom';
+const {hasCommandModifier} = KeyBindingUtil;
 
 const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
   center: {
@@ -18,15 +31,102 @@ const myBlockTypes = DefaultDraftBlockRenderMap.merge(new Map({
 }));
 
 class Document extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
-      inlineStyles: {}
+      title: '',
+      editorState: EditorState.createEmpty(), // EditorState.createWithContent(ContentState.createFromText('hi andrew'))
+      inlineStyles: {},
+      fontSize: 12,
+      openColorPicker: false,
+      openHighlighter: false,
+      open: false,
     };
+
+    this.previousHighlight = null;
+
     this.onChange = (editorState) => {
+      // const selection = editorState.getSelection();
+      //
+      // if(this.previousHighlight) {
+      //   console.log('andrew');
+      //   editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+      //   editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      //   editorState = EditorState.acceptSelection(editorState, selection);
+      // }
+      //
+      // editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      // this.previousHighlight = editorState.getSelection();
+
+
       this.setState({editorState});
+      this.props.socket.emit('onChange', {
+        contentState: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+        inlineStyles: this.state.inlineStyles,
+        fontSize: this.state.fontSize,
+        roomName: this.props.match.params.docID
+      });
+      //this is where its passed
     };
+
+    var self = this;
+    this.props.socket.on('updateOnChange', function({ contentState, fontSize, inlineStyles }) {
+      console.log('yayayay');
+      self.setState({
+        editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contentState))),
+        fontSize: fontSize,
+        inlineStyles: inlineStyles
+      });
+      //this is where you parse
+    });
+  }
+
+  componentWillMount() {
+    var self = this;
+    axios.post('http://localhost:3000/retrieval', {
+      docID: self.props.match.params.docID
+    })
+    .then(function({ data }) {
+      if(data.editorState) {
+        var content = JSON.parse(data.editorState);
+        var newInlineStyles = Object.assign({}, self.state.inlineStyles);
+        content.blocks.forEach(function(block) {
+          block.inlineStyleRanges.forEach(function(i) {
+            if (i.style.startsWith('#')) {
+              newInlineStyles[i.style] = {
+                color: i.style
+              };
+            } else if (i.style.startsWith('highlight')) {
+              newInlineStyles[i.style] = {
+                backgroundColor: i.style.substring(9, 17)
+              };
+            }
+          });
+        });
+        self.setState({
+          editorState: EditorState.createWithContent(convertFromRaw(content)),
+          title: data.title,
+          inlineStyles: newInlineStyles
+        });
+      } else {
+        self.setState({
+          title: data.title
+        });
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.props.socket.emit('joinRoom', this.props.match.params.docID);
+  }
+
+  handleKeyCommand(command: string): DraftHandleValue {
+    if (command === 'myeditor-save') {
+      this._onSaveClick();
+      return 'handled';
+    }
+    return 'not-handled';
   }
 
   formatColor(color) {
@@ -38,8 +138,23 @@ class Document extends React.Component {
     );
     this.setState({
       inlineStyles: newInlineStyles,
-      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex)
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, color.hex),
+      openColorPicker: false
     });
+  }
+
+  highlightText(color) {
+    var newInlineStyles = Object.assign({}, this.state.inlineStyles,
+      {['highlight' + color.hex]: {
+        backgroundColor: color.hex,
+      }}
+    );
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String('highlight' + color.hex)),
+      openHighlighter: false
+    });
+    console.log("INLINESTYLES", this.state.inlineStyles);
   }
 
   toggleFormat(e, style, block) {
@@ -63,7 +178,7 @@ class Document extends React.Component {
 
   formatButton({icon, style, block}) {
     return (
-      <RaisedButton
+      <FlatButton
         backgroundColor={
           this.state.editorState.getCurrentInlineStyle().has(style) ?
           colors.blue800 :
@@ -75,21 +190,29 @@ class Document extends React.Component {
     );
   }
 
+  handleChangeComplete() {
+    this.setState({
+      openColorPicker: false
+    });
+  }
+
   openColorPicker(e) {
     this.setState({
       openColorPicker: true,
       colorPickerButton: e.target
     });
   }
+
   closeColorPicker() {
     this.setState({
       openColorPicker: false,
     });
   }
+
   colorPicker() {
     return (
       <div style={{display: 'inline-block'}}>
-        <RaisedButton
+        <FlatButton
           backgroundColor={colors.blue200}
           icon={<FontIcon className='material-icons'>format_color_fill</FontIcon>}
           onClick={this.openColorPicker.bind(this)}
@@ -107,49 +230,239 @@ class Document extends React.Component {
     );
   }
 
+  openHighlighter(e) {
+    this.setState({
+      openHighlighter: true,
+      highlighterButton: e.target
+    });
+  }
+
+  closeHighlighter() {
+    this.setState({
+      openHighlighter: false,
+    });
+  }
+
+  highlighter() {
+    return (
+      <div style={{display: 'inline-block'}}>
+        <FlatButton
+          backgroundColor={colors.blue200}
+          icon={<FontIcon className='material-icons'>highlight</FontIcon>}
+          onClick={this.openHighlighter.bind(this)}
+        />
+        <Popover
+          open={this.state.openHighlighter}
+          anchorEl={this.state.highlighterButton}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
+          onRequestClose={this.closeHighlighter.bind(this)}
+        >
+          <TwitterPicker onChangeComplete={this.highlightText.bind(this)}/>
+        </Popover>
+      </div>
+    );
+  }
+
+  applyIncreaseFontSize(shrink) {
+    var newFontSize = this.state.fontSize + (shrink ? -4 : 4);
+    var newInlineStyles = Object.assign({}, this.state.inlineStyles,
+      {[newFontSize]: {
+        fontSize: `${newFontSize}px`
+      }}
+    );
+    this.setState({
+      inlineStyles: newInlineStyles,
+      editorState: RichUtils.toggleInlineStyle(this.state.editorState, String(newFontSize)),
+      fontSize: newFontSize
+    });
+  }
+
+  increaseFontSize(shrink) {
+    return (
+      <FlatButton
+        backgroundColor={colors.blue200}
+        onMouseDown={() => this.applyIncreaseFontSize(shrink)}
+        icon={<FontIcon className='material-icons'>{shrink ? 'zoom_out' : 'zoom_in'}</FontIcon>}
+      />
+    );
+  }
+
+  saveReminder() {
+    var self = this;
+
+    axios.post('http://localhost:3000/retrieval', {
+      docID: self.props.match.params.docID
+    })
+    .then(function({ data }) {
+
+      console.log('this is the data base stuff', JSON.stringify(convertFromRaw(JSON.parse(data.editorState)).blockMap));
+      console.log('this is the stuff on the document', JSON.stringify(self.state.editorState.getCurrentContent().blockMap));
+
+      if (JSON.stringify(convertFromRaw(JSON.parse(data.editorState)).blockMap) !== JSON.stringify(self.state.editorState.getCurrentContent().blockMap)) {
+        self.setState({open: true});
+      } else {
+        console.log('what the god');
+        self.props.history.push('/doc-portal');
+      }
+    });
+  }
+
+  _onSaveClick() {
+    axios.post('http://localhost:3000/save', {
+      docID: this.props.match.params.docID,
+      editorState: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
+    })
+     .then(function(resp) {
+       console.log('Document successfully saved!');
+     })
+     .catch(function(err) {
+       console.log('There was an error', err);
+     });
+  }
+
+  _handleDiscard() {
+    this.setState({open: false});
+    this.props.history.push('/doc-portal');
+  }
+
+  _handleSave() {
+    this.setState({open: false});
+    this._onSaveClick();
+    this.props.history.push('/doc-portal');
+  }
 
   render() {
+    console.log('INLINE STYLES', this.state.inlineStyles);
+    const actions = [
+      <FlatButton
+        label="Discard Changes"
+        primary={true}
+        onTouchTap={() => this._handleDiscard()}
+      />,
+      <FlatButton
+        label="Save"
+        primary={true}
+        onTouchTap={() => this._handleSave()}
+      />,
+    ];
     return (
-    <div>
-        <h1>Sample Document</h1>
-        <div id="navigation">
-          <RaisedButton
-            className="button"
-            // primary={true}
+      <div className="WRAPPER">
+
+        <div className='title'>
+          <h1>{this.state.title}</h1>
+          <a className="docID">{`Document ID: ${this.props.match.params.docID}`}</a>
+        </div>
+
+        <div className="navigation">
+          {/* <Toggle
+            label="Enable Auto-saving"
+            labelPosition="right"
+            style={{"margin-top": "10px"}}
+           /> */}
+          <FlatButton
+            className="button back-docportal"
             label="Back to Documents Portal"
             icon={<FontIcon className='material-icons'>navigate_before</FontIcon>}
+            onTouchTap={() => this.saveReminder()}
           />
-          <RaisedButton
-            className="button"
-            // primary={true}
+          <FlatButton
+            className="button save"
             label="Save Changes"
             icon={<FontIcon className='material-icons'>save</FontIcon>}
+            onTouchTap={() => this._onSaveClick()}
           />
-          <a className="docID">Document ID: _replace_this_please_ </a>
+          <Dialog
+            title="Do you want to save?"
+            actions={actions}
+            modal={true}
+            open={this.state.open}
+          />
         </div>
-        <div className="toolbar">
-          {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
-          {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
-          {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
-          {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
-          {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
-          {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
-          {this.colorPicker()}
-          {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
-          {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
-          {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
+
+        <Card>
+          <CardHeader
+            // title="Editing tools"
+            style={{backgroundColor: "#dddeee"}}
+            actAsExpander={true}
+            showExpandableButton={true}
+          />
+        <CardActions expandable={true} style={{backgroundColor: "#dddeee"}}>
+          <div className="toolbar">
+            <div className="toolbar1">
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_bold', style: 'BOLD'})}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_italic', style: 'ITALIC'})}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_underlined', style: 'UNDERLINE'})}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_strikethrough', style: 'STRIKETHROUGH'})}
+              </div>
+            </div>
+            <div className="toolbar2">
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_list_numbered', style: 'ordered-list-item', block: true })}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_list_bulleted', style: 'unordered-list-item', block: true })}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_align_left', style: 'unstyled', block: true })}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_align_center', style: 'center', block: true })}
+              </div>
+              <div className="toolbar-item">
+                {this.formatButton({icon: 'format_align_right', style: 'right', block: true })}
+              </div>
+            </div>
+            <div className="toolbar3">
+              <div className="toolbar-item">
+                {this.colorPicker()}
+              </div>
+              <div className="toolbar-item">
+                {this.increaseFontSize(true)}
+              </div>
+              <div className="toolbar-item">
+                {this.increaseFontSize(false)}
+              </div>
+              <div className="toolbar-item">
+                {this.highlighter()}
+              </div>
+            </div>
+          </div>
+        </CardActions>
+        </Card>
+
+        <div className="container">
+          <Editor
+            ref="editor"
+            blockRenderMap={myBlockTypes}
+            customStyleMap={this.state.inlineStyles}
+            editorState={this.state.editorState}
+            // handleKeyCommand={this.handleKeyCommand}
+            onChange={this.onChange}
+            spellCheck={true}
+            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            keyBindingFn={myKeyBindingFn}
+          />
         </div>
-        <Editor
-          ref="editor"
-          blockRenderMap={myBlockTypes}
-          customStyleMap={this.state.inlineStyles}
-          editorState={this.state.editorState}
-          onChange={this.onChange}
-          spellCheck={true}
-        />
+
+
     </div>
     );
   }
+}
+
+function myKeyBindingFn(e: SyntheticKeyboardEvent): string {
+  if (e.keyCode === 83 /* `S` key */ && hasCommandModifier(e)) {
+    return 'myeditor-save';
+  }
+  return getDefaultKeyBinding(e);
 }
 
 export default Document;
