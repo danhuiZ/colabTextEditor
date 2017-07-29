@@ -17,7 +17,7 @@ import Popover from 'material-ui/Popover';
 import Dialog from 'material-ui/Dialog';
 import { TwitterPicker } from 'react-color';
 import { Map } from 'immutable';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
 import {Tabs, Tab} from 'material-ui/Tabs';    //revision-history && toolbar tabs
 // import Toggle from 'material-ui/Toggle';
