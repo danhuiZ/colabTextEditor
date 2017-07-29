@@ -90,46 +90,6 @@ class Login extends React.Component {
           </CardActions>
         </Card>
 
-      // <div className="valign-wrapper row login-box">
-      //   <div className="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
-      //     <form>
-      //       <div className="card-content">
-      //         <span className="card-title">Log in with DAM docs, damn</span>
-      //         <div className="row">
-      //           <p style={{color: 'red'}}>{this.state.status}</p>
-      //           <div className="input-field col s12">
-      //             <input
-      //               type="text"
-      //               placeholder="Username"
-      //               className="validate"
-      //               name="username"
-      //               value={this.state.username}
-      //               onChange={(e) => this.handleUser(e)}
-      //               id="username" />
-      //           </div>
-      //           <div className="input-field col s12">
-      //             <input
-      //               type="password"
-      //               placeholder="Password"
-      //               className="validate"
-      //               name="password"
-      //               value={this.state.password}
-      //               onChange={(e) => this.handlePass(e)}
-      //               id="password" />
-      //           </div>
-      //         </div>
-      //       </div>
-      //       <div className="card-action right-align">
-      //         <Link to='/registration'>To Registration</Link>
-      //         <input
-      //           type="submit"
-      //           className="btn green waves-effect waves-light"
-      //           onClick={(e) => this.handleSubmit(e)}
-      //           value="Login" />
-      //       </div>
-      //     </form>
-      //   </div>
-      // </div>
     );
   }
 
