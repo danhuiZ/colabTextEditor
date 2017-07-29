@@ -90,7 +90,7 @@ class Document extends React.Component {
 
   componentWillMount() {
     var self = this;
-    axios.post('http://localhost:3000/retrieval', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/retrieval', {
       docID: self.props.match.params.docID
     })
     .then(function({ data }) {
@@ -301,7 +301,7 @@ class Document extends React.Component {
   saveReminder() {
     var self = this;
 
-    axios.post('http://localhost:3000/retrieval', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/retrieval', {
       docID: self.props.match.params.docID
     })
     .then(function({ data }) {
@@ -320,7 +320,7 @@ class Document extends React.Component {
 
   _onSaveClick() {
     var self = this;
-    axios.post('http://localhost:3000/save', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/save', {
       docID: this.props.match.params.docID,
       editorState: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
     })
@@ -350,7 +350,7 @@ class Document extends React.Component {
   _handleHistory(time) {
     var self = this;
     // post to new route and
-    axios.post('http://localhost:3000/history', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/history', {
       docID: this.props.match.params.docID,
       time: time
     })
