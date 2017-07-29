@@ -46,7 +46,7 @@ export default class DocPortal extends React.Component {
     var self = this;
     var title = this.state.docID;
     var password = this.state.docPass;
-    axios.post('http://localhost:3000/newdoc', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/newdoc', {
       title: title,
       password: password,
       editorState: JSON.stringify(convertToRaw(ContentState.createFromText('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')))
@@ -83,7 +83,7 @@ export default class DocPortal extends React.Component {
     var sharedDocID = this.state.sharedDocID;
     var password = this.state.docPass;
     // post to route in Backend
-    axios.post('http://localhost:3000/search-shared', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/search-shared', {
       docID: sharedDocID,
       password: password
     })
@@ -116,7 +116,7 @@ export default class DocPortal extends React.Component {
     var self = this;
     console.log('TRYING TO DELETE');
     // var docID = e.target.value;
-    axios.post('http://localhost:3000/deletedoc', {docID: docID})
+    axios.post('https://desolate-depths-35755.herokuapp.com/deletedoc', {docID: docID})
     .then( function({data}) {
       if(data.sucess){
 
@@ -135,7 +135,7 @@ export default class DocPortal extends React.Component {
     //load all the documents into the state of this component under myDocs
     var self = this;
 
-    axios.get('http://localhost:3000/getdocs')
+    axios.get('https://desolate-depths-35755.herokuapp.com/getdocs')
     .then(function({ data }){
       if(data.success) {
         self.setState({

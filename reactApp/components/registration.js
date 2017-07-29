@@ -29,7 +29,7 @@ class Registration extends React.Component {
 
   handleSubmit() {
     var self = this;
-    axios.post('http://localhost:3000/register', {
+    axios.post('https://desolate-depths-35755.herokuapp.com/register', {
       username: this.state.username,
       password: this.state.password
     })
